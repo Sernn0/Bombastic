@@ -4,7 +4,7 @@ part 'game_result_model.freezed.dart';
 part 'game_result_model.g.dart';
 
 @freezed
-class PlayerResultModel with _$PlayerResultModel {
+abstract class PlayerResultModel with _$PlayerResultModel {
   const factory PlayerResultModel({
     required String uid,
     required String displayName,
@@ -17,7 +17,7 @@ class PlayerResultModel with _$PlayerResultModel {
 }
 
 @freezed
-class GameResultModel with _$GameResultModel {
+abstract class GameResultModel with _$GameResultModel {
   const factory GameResultModel({
     required String groupId,
     required List<PlayerResultModel> rankList, // 폭발 횟수 오름차순 정렬

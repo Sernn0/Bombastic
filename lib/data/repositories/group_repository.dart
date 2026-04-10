@@ -8,7 +8,7 @@ import '../models/group_model.dart';
 part 'group_repository.g.dart';
 
 @riverpod
-GroupRepository groupRepository(GroupRepositoryRef ref) {
+GroupRepository groupRepository(Ref ref) {
   return GroupRepository(ref.watch(firestoreProvider));
 }
 
@@ -24,12 +24,19 @@ class GroupRepository {
   Future<GroupModel> createGroup({
     required String creatorUid,
     required String joinCode,
+    required String name,
+    required int maxMembers,
+    required String nickname,
   }) async {
     final doc = _groups.doc();
     final group = GroupModel(
       id: doc.id,
+      name: name,
       joinCode: joinCode,
+      hostUid: creatorUid,
+      maxMembers: maxMembers,
       memberUids: [creatorUid],
+      memberNicknames: {creatorUid: nickname},
       status: GroupStatus.waiting,
       createdAt: DateTime.now(),
     );

@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-// 현재 프로젝트 구조에 맞는 AuthRepository 경로
-import '../../../data/repositories/auth_repository.dart'; 
+import 'package:bomb_pass/core/repositories/auth_repository.dart';
 
 part 'auth_controller.g.dart';
 

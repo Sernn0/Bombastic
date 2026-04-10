@@ -7,7 +7,7 @@ import '../models/bomb_model.dart';
 part 'bomb_repository.g.dart';
 
 @riverpod
-BombRepository bombRepository(BombRepositoryRef ref) {
+BombRepository bombRepository(Ref ref) {
   return BombRepository(ref.watch(firestoreProvider));
 }
 

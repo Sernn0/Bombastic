@@ -6,7 +6,7 @@ part 'shop_item_model.g.dart';
 enum ItemType { swapOrder, addBomb, enhancePenalty }
 
 @freezed
-class ShopItemModel with _$ShopItemModel {
+abstract class ShopItemModel with _$ShopItemModel {
   const factory ShopItemModel({
     required String id,
     required String name,

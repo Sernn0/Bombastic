@@ -9,7 +9,7 @@ import '../models/user_model.dart';
 part 'auth_repository.g.dart';
 
 @riverpod
-AuthRepository authRepository(AuthRepositoryRef ref) {
+AuthRepository authRepository(Ref ref) {
   // 2. 여기서 만들어두신 프로바이더를 쏙쏙 뽑아서 Repository에 넣어줍니다!
   return AuthRepository(
     ref.watch(firebaseAuthProvider),
@@ -27,6 +27,9 @@ class AuthRepository {
   Future<UserCredential> signInAnonymously() async {
     return await _auth.signInAnonymously();
   }
+
+  // 로그아웃
+  Future<void> signOut() => _auth.signOut();
 
   // Firestore에 유저 정보 저장 (첫 로그인일 때만)
   Future<void> saveUserToFirestore(User user) async {

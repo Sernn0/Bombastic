@@ -9,7 +9,7 @@ part 'game_controller.g.dart';
 
 /// 현재 활성 폭탄 실시간 스트림
 @riverpod
-Stream<BombModel?> activeBomb(ActiveBombRef ref) {
+Stream<BombModel?> activeBomb(Ref ref) {
   // TODO: currentGroupId를 실제 값으로 연결
   const groupId = ''; // ref.watch(currentGroupIdProvider)
   if (groupId.isEmpty) return const Stream.empty();
@@ -18,8 +18,8 @@ Stream<BombModel?> activeBomb(ActiveBombRef ref) {
 
 /// 내 차례인지 여부
 @riverpod
-bool isMyTurn(IsMyTurnRef ref) {
-  final bomb = ref.watch(activeBombProvider).valueOrNull;
+bool isMyTurn(Ref ref) {
+  final bomb = ref.watch(activeBombProvider).asData?.value;
   final uid = ref.watch(currentUidProvider);
   return bomb?.holderUid == uid;
 }

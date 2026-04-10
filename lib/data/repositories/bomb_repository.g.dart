@@ -48,4 +48,4 @@ final class BombRepositoryProvider
   }
 }
 
-String _$bombRepositoryHash() => r'f64311dda81df36e4ab71a1900532faab7d90e2d';
+String _$bombRepositoryHash() => r'cd9985a7c7ad9f7d52808ce330a1998e2362a8d7';

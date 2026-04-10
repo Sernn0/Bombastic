@@ -50,7 +50,7 @@ final class CurrentGroupProvider
   }
 }
 
-String _$currentGroupHash() => r'f7d404ef134c853ab0b4f036fe23db8325305b09';
+String _$currentGroupHash() => r'93755c9d976c1b0ba23f367b920cf39b5213da6d';
 
 @ProviderFor(GroupController)
 final groupControllerProvider = GroupControllerProvider._();
@@ -84,7 +84,7 @@ final class GroupControllerProvider
   }
 }
 
-String _$groupControllerHash() => r'088fac3d095897dec742561bfe5de612f043e2c1';
+String _$groupControllerHash() => r'43d115b435010c48fdb85800be7492ea411a2e9e';
 
 abstract class _$GroupController extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();

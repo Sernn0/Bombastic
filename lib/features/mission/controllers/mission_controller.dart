@@ -8,7 +8,7 @@ part 'mission_controller.g.dart';
 
 /// 미션 목록
 @riverpod
-Future<List<MissionModel>> missions(MissionsRef ref) {
+Future<List<MissionModel>> missions(Ref ref) {
   return ref.watch(missionRepositoryProvider).fetchMissions();
 }
 

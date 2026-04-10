@@ -27,5 +27,5 @@ final authStateProvider = StreamProvider<User?>((ref) {
 
 /// 현재 uid (null이면 미인증)
 final currentUidProvider = Provider<String?>((ref) {
-  return ref.watch(authStateProvider).valueOrNull?.uid;
+  return ref.watch(authStateProvider).asData?.value?.uid;
 });

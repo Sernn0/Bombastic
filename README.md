@@ -1,6 +1,6 @@
-# 💣 Bombastic (봄바스틱 - 가칭)
+# 💣 Bombastic (봄바스틱)
 
-4명이 폭탄을 돌리는 장기전 소셜 게임.
+2명~10명이 폭탄을 돌리는 장기전 소셜 게임.
 
 ---
 
@@ -12,10 +12,10 @@ bash setup.sh
 
 # 2. Firebase 연결 (각자 로컬에서 1회 실행)
 dart pub global activate flutterfire_cli
-flutterfire configure
+flutterfire configure --project=likelion-holycow
 ```
 
-> `flutterfire configure` 실행 시 `lib/firebase_options.dart`가 자동 생성됩니다.  
+> `flutterfire configure` 실행 시 `lib/firebase_options.dart`가 자동 생성됩니다.
 > 이 파일은 `.gitignore`에 포함되어 있으므로 **팀원 각자 로컬에서 생성**해야 합니다.
 
 ### Firebase 파일 배치
@@ -36,14 +36,5 @@ flutter run
 ```
 
 ---
-
-## 역할 분담
-
-| 담당 | 영역 |
-|------|------|
-| A | Auth, 그룹 생성/참여 |
-| B | 게임 로직, 폭탄 타이머, Cloud Functions |
-| C | 상점, 미션, 출석 체크 |
-| D | 결과 정산, 공유카드, UI/테마 |
 
 할 일 및 논의 사항 → [`NOTES.md`](./NOTES.md)

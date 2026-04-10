@@ -52,7 +52,7 @@ final class ShopItemsProvider
   }
 }
 
-String _$shopItemsHash() => r'595a4b1609ddd271cdcb773227b24c594a2400ed';
+String _$shopItemsHash() => r'4c726ee35b90e6ea309a45c517b103236394e647';
 
 @ProviderFor(ShopController)
 final shopControllerProvider = ShopControllerProvider._();

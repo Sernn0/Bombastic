@@ -10,7 +10,7 @@ part 'result_controller.g.dart';
 
 /// 게임 결과 계산 (폭발 기록 기반)
 @riverpod
-Future<GameResultModel> gameResult(GameResultRef ref) async {
+Future<GameResultModel> gameResult(Ref ref) async {
   // TODO: currentGroupId 실제 값으로 연결
   const groupId = '';
   final bombs = await ref.read(bombRepositoryProvider).fetchExplodedBombs(groupId);

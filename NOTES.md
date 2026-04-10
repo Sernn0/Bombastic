@@ -2,7 +2,7 @@
 
 > 팀원 공용 메모판. 결정사항·방향성·논의 내용을 여기에 자유롭게 기록하세요.
 > 커밋 메시지보다 덜 형식적으로, 이슈보다 더 빠르게.
-# 간단 방향성 메모
+## 간단 방향성 메모
 
 ### 스크린 구성 및 흐름
 
@@ -25,8 +25,8 @@ AuthGate
 - 다중 그룹 동시 참여 가능 (각 그룹마다 독립적인 게임 진행)
 
 ### 기능 설명
-- 리더 친구가 참가 인원을 확정한 뒤 그룹을 생성 → 친구들에게 참여코드 공유
-- 참여 시 그룹별 닉네임 설정 후 대기, 인원 충족 시 게임 자동 시작
+- 방장이 그룹 생성 시 **그룹 이름** + **참가 인원(2~10명)** 설정 → 참여코드 공유
+- 참여 시 그룹별 닉네임 설정 후 대기, 방장이 설정한 인원이 모두 모이면 게임 자동 시작
     - 이때 참가 인원수의 목록에 대해 고정 폭탄 전달 순서가 생성됨
 - 정해진 시간 이내에 사용할 아이템을 적용한 뒤(없으면 생략) 다음 친구에게 폭탄을 전달해야 함, 그러지 못하면 폭탄이 터지며 게임 즉시 종료
 - 기본 전제: 친구들끼리 내기를 걸고 한다던지.
@@ -67,16 +67,17 @@ AuthGate
 ---
 
 ### 환경 설정
-- [ ] Firebase 프로젝트 생성 및 팀원 초대
-- [ ] `flutterfire configure` 실행 후 각자 `firebase_options.dart` 생성
-- [ ] `google-services.json` / `GoogleService-Info.plist` 배치
-- [ ] `dart run build_runner build` 실행 (freezed / riverpod 코드 생성)
+- [x] Firebase 프로젝트 생성 및 팀원 초대
+- [x] `flutterfire configure` 실행 후 각자 `firebase_options.dart` 생성
+- [x] `google-services.json` / `GoogleService-Info.plist` 배치
+- [x] `dart run build_runner build` 실행 (freezed / riverpod 코드 생성)
 - [ ] CI 구성 검토 (GitHub Actions + flutter test)
 
 ### 인증 · 그룹
-- [ ] 익명 로그인 완성 (AuthController → UserModel Firestore 저장)
-- [ ] 홈 화면 구현 — 참여 중인 그룹 목록뷰 (그룹명 / 내 닉네임 / 간단 현황)
-- [ ] 그룹 생성 / 참여코드 입력 화면 구현
+- [x] 익명 로그인 완성 (AuthController → UserModel Firestore 저장)
+- [x] AuthGate — 로그인 상태 실시간 감지 및 홈 화면 라우팅 연동
+- [x] 홈 화면 구현 — 참여 중인 그룹 목록뷰 (그룹명 / 내 닉네임 / 간단 현황)
+- [x] 그룹 생성 / 참여코드 입력 화면 구현
 - [ ] 그룹 참여 시점에 그룹별 닉네임 입력 화면 추가
 - [ ] 그룹 내 설정에서 닉네임 변경 기능 구현
 - [ ] 참여코드 생성 클라이언트 유지 (중복 문제 발생 시 서버로 이전)

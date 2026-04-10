@@ -50,7 +50,7 @@ final class GameResultProvider
   }
 }
 
-String _$gameResultHash() => r'9bb3db6df0d926d123c491b947c224530c0ccbce';
+String _$gameResultHash() => r'82f37a5a600b2a1d4e3494029d5e8e2139fe58bd';
 
 @ProviderFor(ResultController)
 final resultControllerProvider = ResultControllerProvider._();

@@ -49,7 +49,7 @@ final class ActiveBombProvider
   }
 }
 
-String _$activeBombHash() => r'1770309f63a33915cd3a4af66a0336dc7efce7a8';
+String _$activeBombHash() => r'b4ff63a0c494edc3f8baac15c0ced05f304e7123';
 
 /// 내 차례인지 여부
 
@@ -94,7 +94,7 @@ final class IsMyTurnProvider extends $FunctionalProvider<bool, bool, bool>
   }
 }
 
-String _$isMyTurnHash() => r'628a63c029ae1698446c670a8d31ce120c049b57';
+String _$isMyTurnHash() => r'afda9e2f1fc147e31d1c68cc2073056bb75758d3';
 
 @ProviderFor(GameController)
 final gameControllerProvider = GameControllerProvider._();

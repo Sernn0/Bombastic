@@ -54,7 +54,7 @@ class _GroupJoinPageState extends ConsumerState<GroupJoinPage> {
                           _codeController.text.trim(),
                         );
                         if (success && context.mounted) {
-                          context.go(AppRoutes.groupLobby);
+                          context.go(AppRoutes.home);
                         }
                       },
                 child: state.isLoading
@@ -67,12 +67,7 @@ class _GroupJoinPageState extends ConsumerState<GroupJoinPage> {
               OutlinedButton(
                 onPressed: state.isLoading
                     ? null
-                    : () async {
-                        final success = await groupCtrl.createGroup();
-                        if (success && context.mounted) {
-                          context.go(AppRoutes.groupLobby);
-                        }
-                      },
+                    : () => context.push(AppRoutes.groupCreate),
                 child: const Text('새 그룹 만들기'),
               ),
               if (state.hasError)

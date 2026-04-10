@@ -47,3 +47,19 @@ service-account.json
 
 # Test coverage
 coverage/
+
+# 미지원 플랫폼 (iOS/Android만 타겟)
+linux/
+macos/
+windows/
+web/
+
+# iOS 빌드 시 자동 생성되는 파일
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Runner.xcodeproj/xcuserdata/
+ios/Runner.xcworkspace/xcuserdata/
+
+# Flutter 메타데이터
+.metadata
+*.iml

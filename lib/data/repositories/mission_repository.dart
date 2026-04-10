@@ -9,7 +9,7 @@ import '../models/mission_model.dart';
 part 'mission_repository.g.dart';
 
 @riverpod
-MissionRepository missionRepository(MissionRepositoryRef ref) {
+MissionRepository missionRepository(Ref ref) {
   return MissionRepository(ref.watch(firestoreProvider));
 }
 

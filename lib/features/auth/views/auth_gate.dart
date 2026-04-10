@@ -1,52 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/repositories/auth_repository.dart';
-import '../../../core/controllers/auth_controller.dart';
-import '../../home/views/home_page.dart'; // 홈 페이지 경로
+import 'package:go_router/go_router.dart';
+
+import 'package:bomb_pass/core/controllers/auth_controller.dart';
+import 'package:bomb_pass/core/router/app_router.dart';
+import 'package:bomb_pass/data/firebase/firebase_providers.dart';
 
 class AuthGate extends ConsumerWidget {
   const AuthGate({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 1. Firebase Auth의 상태 변화를 지켜봅니다.
-    final authState = ref.watch(authRepositoryProvider).authStateChanges;
+    final authAsync = ref.watch(authStateProvider);
 
-    return StreamBuilder(
-      stream: authState,
-      builder: (context, snapshot) {
-        // 로딩 중일 때
-        if (snapshot.connectionState == ConnectionState.waiting) {
+    return authAsync.when(
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (e, _) => Scaffold(
+        body: Center(child: Text('오류: $e')),
+      ),
+      data: (user) {
+        if (user != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.go(AppRoutes.home);
+          });
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
-
-        // 2. 로그인된 사용자가 있다면 홈 화면으로 이동
-        if (snapshot.hasData) {
-          return const HomePage();
-        }
-
-        // 3. 로그인이 안 되어 있다면 익명 로그인을 시도하는 화면(또는 자동 로그인)
-        return const SignInAttemptPage();
+        return const _SignInAttemptPage();
       },
     );
   }
 }
 
-// 로그인이 안 되어 있을 때 자동으로 익명 로그인을 시도하는 임시 페이지
-class SignInAttemptPage extends ConsumerStatefulWidget {
-  const SignInAttemptPage({super.key});
+class _SignInAttemptPage extends ConsumerStatefulWidget {
+  const _SignInAttemptPage();
 
   @override
-  ConsumerState<SignInAttemptPage> createState() => _SignInAttemptPageState();
+  ConsumerState<_SignInAttemptPage> createState() => _SignInAttemptPageState();
 }
 
-class _SignInAttemptPageState extends ConsumerState<SignInAttemptPage> {
+class _SignInAttemptPageState extends ConsumerState<_SignInAttemptPage> {
   @override
   void initState() {
     super.initState();
-    // 페이지가 뜨자마자 익명 로그인 시도
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(authControllerProvider.notifier).signIn();
     });

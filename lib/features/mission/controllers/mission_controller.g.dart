@@ -52,7 +52,7 @@ final class MissionsProvider
   }
 }
 
-String _$missionsHash() => r'8850a9deb3a77f4d7ed63a5f31f94005af8cc58a';
+String _$missionsHash() => r'8e9faaa419465d314917a3340e3488016b1244cb';
 
 @ProviderFor(MissionController)
 final missionControllerProvider = MissionControllerProvider._();

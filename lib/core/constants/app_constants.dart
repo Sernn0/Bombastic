@@ -1,6 +1,9 @@
 abstract final class AppConstants {
-  /// 그룹 고정 인원
-  static const int groupSize = 4;
+  /// 그룹 최소 인원
+  static const int minGroupSize = 2;
+
+  /// 그룹 최대 인원
+  static const int maxGroupSize = 10;
 
   /// 참여코드 길이
   static const int joinCodeLength = 6;

@@ -8,7 +8,7 @@ part 'shop_controller.g.dart';
 
 /// 상점 아이템 목록
 @riverpod
-Future<List<ShopItemModel>> shopItems(ShopItemsRef ref) {
+Future<List<ShopItemModel>> shopItems(Ref ref) {
   return ref.watch(shopRepositoryProvider).fetchItems();
 }
 

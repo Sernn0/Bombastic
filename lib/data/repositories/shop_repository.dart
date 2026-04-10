@@ -8,7 +8,7 @@ import '../models/shop_item_model.dart';
 part 'shop_repository.g.dart';
 
 @riverpod
-ShopRepository shopRepository(ShopRepositoryRef ref) {
+ShopRepository shopRepository(Ref ref) {
   return ShopRepository(ref.watch(firestoreProvider));
 }
 

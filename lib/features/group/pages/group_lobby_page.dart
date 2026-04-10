@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/constants/app_constants.dart';
 import '../../../core/router/app_router.dart';
 import '../controllers/group_controller.dart';
 
@@ -64,12 +63,12 @@ class GroupLobbyPage extends ConsumerWidget {
 
                 // 멤버 목록
                 Text(
-                  '참여자 ${group.memberUids.length}/${AppConstants.groupSize}',
+                  '참여자 ${group.memberUids.length}/${group.maxMembers}',
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
                 ...List.generate(
-                  AppConstants.groupSize,
+                  group.maxMembers,
                   (i) => ListTile(
                     leading: CircleAvatar(child: Text('${i + 1}')),
                     title: i < group.memberUids.length
@@ -80,7 +79,7 @@ class GroupLobbyPage extends ConsumerWidget {
                 const Spacer(),
 
                 // 게임 시작 (방장만, 4명 모두 참여 시)
-                if (group.memberUids.length == AppConstants.groupSize)
+                if (group.memberUids.length == group.maxMembers)
                   ElevatedButton(
                     onPressed: () => context.go(AppRoutes.game),
                     child: const Text('게임 시작!'),

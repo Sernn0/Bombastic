@@ -7,7 +7,9 @@ import '../controllers/game_controller.dart';
 import '../controllers/timer_controller.dart';
 
 class GamePage extends ConsumerWidget {
-  const GamePage({super.key});
+  const GamePage({super.key, required this.groupId});
+
+  final String groupId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

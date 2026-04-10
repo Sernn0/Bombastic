@@ -6,7 +6,7 @@ part 'bomb_model.g.dart';
 enum BombStatus { active, exploded, defused }
 
 @freezed
-class BombModel with _$BombModel {
+abstract class BombModel with _$BombModel {
   const factory BombModel({
     required String id,
     required String groupId,

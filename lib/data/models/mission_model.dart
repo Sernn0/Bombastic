@@ -6,7 +6,7 @@ part 'mission_model.g.dart';
 enum MissionType { daily, weekly }
 
 @freezed
-class MissionModel with _$MissionModel {
+abstract class MissionModel with _$MissionModel {
   const factory MissionModel({
     required String id,
     required String title,

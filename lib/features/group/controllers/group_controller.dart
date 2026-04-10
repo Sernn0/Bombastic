@@ -10,7 +10,7 @@ part 'group_controller.g.dart';
 
 /// 현재 유저가 속한 그룹 실시간 스트림
 @riverpod
-Stream<GroupModel?> currentGroup(CurrentGroupRef ref) {
+Stream<GroupModel?> currentGroup(Ref ref) {
   // TODO: 현재 유저의 groupId를 UserModel에서 가져오도록 연결
   return const Stream.empty();
 }
@@ -21,7 +21,11 @@ class GroupController extends _$GroupController {
   AsyncValue<void> build() => const AsyncData(null);
 
   /// 새 그룹 생성
-  Future<bool> createGroup() async {
+  Future<bool> createGroup({
+    required String name,
+    required int maxMembers,
+    String nickname = '익명',
+  }) async {
     state = const AsyncLoading();
     final uid = ref.read(currentUidProvider);
     if (uid == null) {
@@ -34,6 +38,9 @@ class GroupController extends _$GroupController {
       () => ref.read(groupRepositoryProvider).createGroup(
             creatorUid: uid,
             joinCode: joinCode,
+            name: name,
+            maxMembers: maxMembers,
+            nickname: nickname,
           ),
     );
 
@@ -63,7 +70,7 @@ class GroupController extends _$GroupController {
     final result = await AsyncValue.guard(() async {
       final group = await repo.findByJoinCode(joinCode);
       if (group == null) throw Exception('존재하지 않는 코드입니다.');
-      if (group.memberUids.length >= AppConstants.groupSize) {
+      if (group.memberUids.length >= group.maxMembers) {
         throw Exception('그룹이 가득 찼습니다.');
       }
       await repo.joinGroup(groupId: group.id, uid: uid);
