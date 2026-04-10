@@ -15,10 +15,21 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
           ?.map((e) => e as String)
           .toList() ??
       const [],
+  groupIds:
+      (json['groupIds'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
+  groupNicknames:
+      (json['groupNicknames'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ) ??
+      const {},
   currentGroupId: json['currentGroupId'] as String?,
   lastCheckInDate: json['lastCheckInDate'] == null
       ? null
       : DateTime.parse(json['lastCheckInDate'] as String),
+  createdAt: json['createdAt'] == null
+      ? null
+      : DateTime.parse(json['createdAt'] as String),
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -27,6 +38,9 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'displayName': instance.displayName,
       'currency': instance.currency,
       'ownedItemIds': instance.ownedItemIds,
+      'groupIds': instance.groupIds,
+      'groupNicknames': instance.groupNicknames,
       'currentGroupId': instance.currentGroupId,
       'lastCheckInDate': instance.lastCheckInDate?.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
     };

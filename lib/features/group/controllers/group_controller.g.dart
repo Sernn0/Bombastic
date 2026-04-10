@@ -8,14 +8,14 @@ part of 'group_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 현재 유저가 속한 그룹 실시간 스트림
+/// 특정 그룹 실시간 스트림
 
-@ProviderFor(currentGroup)
-final currentGroupProvider = CurrentGroupProvider._();
+@ProviderFor(watchGroup)
+final watchGroupProvider = WatchGroupFamily._();
 
-/// 현재 유저가 속한 그룹 실시간 스트림
+/// 특정 그룹 실시간 스트림
 
-final class CurrentGroupProvider
+final class WatchGroupProvider
     extends
         $FunctionalProvider<
           AsyncValue<GroupModel?>,
@@ -23,20 +23,27 @@ final class CurrentGroupProvider
           Stream<GroupModel?>
         >
     with $FutureModifier<GroupModel?>, $StreamProvider<GroupModel?> {
-  /// 현재 유저가 속한 그룹 실시간 스트림
-  CurrentGroupProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'currentGroupProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  /// 특정 그룹 실시간 스트림
+  WatchGroupProvider._({
+    required WatchGroupFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'watchGroupProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
-  String debugGetCreateSourceHash() => _$currentGroupHash();
+  String debugGetCreateSourceHash() => _$watchGroupHash();
+
+  @override
+  String toString() {
+    return r'watchGroupProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
@@ -46,11 +53,44 @@ final class CurrentGroupProvider
 
   @override
   Stream<GroupModel?> create(Ref ref) {
-    return currentGroup(ref);
+    final argument = this.argument as String;
+    return watchGroup(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is WatchGroupProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
-String _$currentGroupHash() => r'93755c9d976c1b0ba23f367b920cf39b5213da6d';
+String _$watchGroupHash() => r'b4c0e6ec6d4928b52163eb26130e78cee8bcc634';
+
+/// 특정 그룹 실시간 스트림
+
+final class WatchGroupFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<GroupModel?>, String> {
+  WatchGroupFamily._()
+    : super(
+        retry: null,
+        name: r'watchGroupProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// 특정 그룹 실시간 스트림
+
+  WatchGroupProvider call(String groupId) =>
+      WatchGroupProvider._(argument: groupId, from: this);
+
+  @override
+  String toString() => r'watchGroupProvider';
+}
 
 @ProviderFor(GroupController)
 final groupControllerProvider = GroupControllerProvider._();
@@ -84,7 +124,7 @@ final class GroupControllerProvider
   }
 }
 
-String _$groupControllerHash() => r'43d115b435010c48fdb85800be7492ea411a2e9e';
+String _$groupControllerHash() => r'a2f84c5cc95f4c3cdb840d93b231d09426de3759';
 
 abstract class _$GroupController extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();

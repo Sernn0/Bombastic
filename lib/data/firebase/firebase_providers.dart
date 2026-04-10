@@ -4,6 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../models/user_model.dart';
+import '../repositories/user_repository.dart';
+
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
   return FirebaseAuth.instance;
 });
@@ -28,4 +31,11 @@ final authStateProvider = StreamProvider<User?>((ref) {
 /// 현재 uid (null이면 미인증)
 final currentUidProvider = Provider<String?>((ref) {
   return ref.watch(authStateProvider).asData?.value?.uid;
+});
+
+/// 현재 유저 Firestore 문서 실시간 스트림
+final currentUserProvider = StreamProvider<UserModel?>((ref) {
+  final uid = ref.watch(currentUidProvider);
+  if (uid == null) return Stream.value(null);
+  return ref.watch(userRepositoryProvider).watchUser(uid);
 });

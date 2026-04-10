@@ -55,4 +55,4 @@ final class BombTimerProvider
   }
 }
 
-String _$bombTimerHash() => r'99592460e0f3a354fd174bf0f2277e8fbe7d9f4f';
+String _$bombTimerHash() => r'f39eb0d84a35ce36eed7cd1f21305749fc0130ce';

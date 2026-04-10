@@ -14,11 +14,25 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final groupsAsync = ref.watch(myGroupsProvider);
     final uid = ref.watch(currentUidProvider) ?? '';
+    final userAsync = ref.watch(currentUserProvider);
+    final currency = userAsync.asData?.value?.currency ?? 0;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('💣 Bombastic'),
         actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Chip(
+              avatar: const Icon(Icons.monetization_on, size: 18),
+              label: Text('$currency'),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.store),
+            tooltip: '상점',
+            onPressed: () => context.push(AppRoutes.shop),
+          ),
           IconButton(
             icon: const Icon(Icons.assignment),
             tooltip: '미션',

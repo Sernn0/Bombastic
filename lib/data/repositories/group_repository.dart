@@ -65,6 +65,17 @@ class GroupRepository {
     });
   }
 
+  /// 그룹 멤버 닉네임 업데이트
+  Future<void> updateMemberNickname({
+    required String groupId,
+    required String uid,
+    required String nickname,
+  }) async {
+    await _groups.doc(groupId).update({
+      'memberNicknames.$uid': nickname,
+    });
+  }
+
   /// 그룹 실시간 스트림 (onSnapshot)
   Stream<GroupModel?> watchGroup(String groupId) {
     return _groups.doc(groupId).snapshots().map((snap) {

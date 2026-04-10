@@ -11,7 +11,7 @@ part of 'result_controller.dart';
 /// 게임 결과 계산 (폭발 기록 기반)
 
 @ProviderFor(gameResult)
-final gameResultProvider = GameResultProvider._();
+final gameResultProvider = GameResultFamily._();
 
 /// 게임 결과 계산 (폭발 기록 기반)
 
@@ -24,19 +24,26 @@ final class GameResultProvider
         >
     with $FutureModifier<GameResultModel>, $FutureProvider<GameResultModel> {
   /// 게임 결과 계산 (폭발 기록 기반)
-  GameResultProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'gameResultProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  GameResultProvider._({
+    required GameResultFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'gameResultProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$gameResultHash();
+
+  @override
+  String toString() {
+    return r'gameResultProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
@@ -46,11 +53,44 @@ final class GameResultProvider
 
   @override
   FutureOr<GameResultModel> create(Ref ref) {
-    return gameResult(ref);
+    final argument = this.argument as String;
+    return gameResult(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GameResultProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
-String _$gameResultHash() => r'82f37a5a600b2a1d4e3494029d5e8e2139fe58bd';
+String _$gameResultHash() => r'23f5ff8d0c786a01e729044f0ba781b80468acf6';
+
+/// 게임 결과 계산 (폭발 기록 기반)
+
+final class GameResultFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<GameResultModel>, String> {
+  GameResultFamily._()
+    : super(
+        retry: null,
+        name: r'gameResultProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// 게임 결과 계산 (폭발 기록 기반)
+
+  GameResultProvider call(String groupId) =>
+      GameResultProvider._(argument: groupId, from: this);
+
+  @override
+  String toString() => r'gameResultProvider';
+}
 
 @ProviderFor(ResultController)
 final resultControllerProvider = ResultControllerProvider._();
@@ -84,7 +124,7 @@ final class ResultControllerProvider
   }
 }
 
-String _$resultControllerHash() => r'c661a0adf5b12b782e3b36395e9387eb868fc114';
+String _$resultControllerHash() => r'48b709a6fc4113bfcd6abfb587c0a6f03cd9a5e3';
 
 abstract class _$ResultController extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();

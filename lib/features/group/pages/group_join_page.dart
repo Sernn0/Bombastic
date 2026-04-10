@@ -50,11 +50,11 @@ class _GroupJoinPageState extends ConsumerState<GroupJoinPage> {
                 onPressed: state.isLoading
                     ? null
                     : () async {
-                        final success = await groupCtrl.joinGroup(
+                        final groupId = await groupCtrl.joinGroup(
                           _codeController.text.trim(),
                         );
-                        if (success && context.mounted) {
-                          context.go(AppRoutes.home);
+                        if (groupId != null && context.mounted) {
+                          context.go('/group/$groupId/nickname');
                         }
                       },
                 child: state.isLoading

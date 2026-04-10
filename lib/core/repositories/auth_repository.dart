@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 // 1. 이미 가지고 계신 firebase_providers.dart 파일 경로를 임포트합니다.
 import '../../data/firebase/firebase_providers.dart'; 
-import '../models/user_model.dart'; 
+import '../../data/models/user_model.dart';
 
 part 'auth_repository.g.dart';
 
@@ -39,7 +39,8 @@ class AuthRepository {
     if (!snapshot.exists) {
       final newUser = UserModel(
         uid: user.uid,
-        groupIds: [], 
+        displayName: '',
+        groupIds: [],
       );
       
       await docRef.set(newUser.toJson()); 

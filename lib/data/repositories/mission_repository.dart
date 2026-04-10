@@ -18,6 +18,19 @@ class MissionRepository {
 
   final FirebaseFirestore _firestore;
 
+  /// 미션 목록 실시간 스트림 (Firestore, 비어있으면 하드코딩)
+  Stream<List<MissionModel>> watchMissions() {
+    return _firestore
+        .collection(AppConstants.missionsCollection)
+        .snapshots()
+        .map((snap) {
+      if (snap.docs.isNotEmpty) {
+        return snap.docs.map((d) => MissionModel.fromJson(d.data())).toList();
+      }
+      return _hardcodedMissions;
+    });
+  }
+
   /// 미션 목록 조회 (Firestore 또는 하드코딩)
   Future<List<MissionModel>> fetchMissions() async {
     final snap =

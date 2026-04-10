@@ -91,11 +91,11 @@ class _GroupCreatePageState extends ConsumerState<GroupCreatePage> {
                           );
                           return;
                         }
-                        final success = await ref
+                        final groupId = await ref
                             .read(groupControllerProvider.notifier)
                             .createGroup(name: name, maxMembers: _maxMembers);
-                        if (success && context.mounted) {
-                          context.go(AppRoutes.home);
+                        if (groupId != null && context.mounted) {
+                          context.go('${AppRoutes.game}/$groupId');
                         }
                       },
                 child: state.isLoading

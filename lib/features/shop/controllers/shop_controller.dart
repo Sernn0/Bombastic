@@ -6,10 +6,10 @@ import '../../../data/repositories/shop_repository.dart';
 
 part 'shop_controller.g.dart';
 
-/// 상점 아이템 목록
+/// 상점 아이템 목록 (실시간)
 @riverpod
-Future<List<ShopItemModel>> shopItems(Ref ref) {
-  return ref.watch(shopRepositoryProvider).fetchItems();
+Stream<List<ShopItemModel>> shopItems(Ref ref) {
+  return ref.watch(shopRepositoryProvider).watchShopItems();
 }
 
 @riverpod

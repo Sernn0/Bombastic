@@ -29,7 +29,7 @@ async function sendPushToUser({ uid, title, body, data }: SendPushOptions): Prom
     data,
     android: {
       priority: 'high',
-      notification: { channelId: 'bomb_pass_channel' },
+      notification: { channelId: 'bombastic_channel' },
     },
     apns: {
       payload: { aps: { sound: 'default', badge: 1 } },

@@ -6,10 +6,10 @@ import '../../../data/repositories/mission_repository.dart';
 
 part 'mission_controller.g.dart';
 
-/// 미션 목록
+/// 미션 목록 (실시간)
 @riverpod
-Future<List<MissionModel>> missions(Ref ref) {
-  return ref.watch(missionRepositoryProvider).fetchMissions();
+Stream<List<MissionModel>> missions(Ref ref) {
+  return ref.watch(missionRepositoryProvider).watchMissions();
 }
 
 @riverpod

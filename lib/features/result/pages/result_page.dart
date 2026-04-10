@@ -6,11 +6,13 @@ import '../controllers/result_controller.dart';
 import '../widgets/result_share_card.dart';
 
 class ResultPage extends ConsumerWidget {
-  const ResultPage({super.key});
+  const ResultPage({super.key, required this.groupId});
+
+  final String groupId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final resultAsync = ref.watch(gameResultProvider);
+    final resultAsync = ref.watch(gameResultProvider(groupId));
     final screenshotCtrl = ScreenshotController();
 
     return Scaffold(
@@ -49,7 +51,9 @@ class ResultPage extends ConsumerWidget {
               ...result.rankList.asMap().entries.map(
                     (e) => ListTile(
                       leading: Text(
-                        ['🥇', '🥈', '🥉', '4️⃣'][e.key],
+                        e.key < 3
+                            ? ['🥇', '🥈', '🥉'][e.key]
+                            : '${e.key + 1}',
                         style: const TextStyle(fontSize: 24),
                       ),
                       title: Text(e.value.displayName),

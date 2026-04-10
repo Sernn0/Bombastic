@@ -43,7 +43,9 @@ class ResultShareCard extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        ['🥇', '🥈', '🥉', '4️⃣'][e.key],
+                        e.key < 3
+                            ? ['🥇', '🥈', '🥉'][e.key]
+                            : '${e.key + 1}',
                         style: const TextStyle(fontSize: 24),
                       ),
                       const SizedBox(width: 12),

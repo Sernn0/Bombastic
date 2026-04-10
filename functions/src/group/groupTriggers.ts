@@ -17,7 +17,7 @@ export const onGroupMemberJoined = functions.firestore
 
     // 4명이 됐을 때만 실행
     if (beforeCount === afterCount) return;
-    if (afterCount !== 4) return;
+    if (afterCount !== after.maxMembers) return;
     if (after.status !== 'waiting') return;
 
     const { groupId } = context.params;
@@ -78,4 +78,61 @@ export const createGroup = functions.https.onCall(async (data, context) => {
   });
 
   return { groupId: groupRef.id };
+});
+
+/**
+ * 방장이 게임을 시작하는 Callable Function.
+ */
+export const startGame = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', '로그인이 필요합니다.');
+  }
+
+  const { groupId } = data as { groupId: string };
+  if (!groupId) {
+    throw new functions.https.HttpsError('invalid-argument', 'groupId가 필요합니다.');
+  }
+
+  const groupRef = db.collection('groups').doc(groupId);
+  const groupSnap = await groupRef.get();
+  if (!groupSnap.exists) {
+    throw new functions.https.HttpsError('not-found', '그룹을 찾을 수 없습니다.');
+  }
+
+  const group = groupSnap.data()!;
+
+  if (group.memberUids[0] !== context.auth.uid) {
+    throw new functions.https.HttpsError('permission-denied', '방장만 게임을 시작할 수 있습니다.');
+  }
+
+  if (group.status !== 'waiting') {
+    throw new functions.https.HttpsError('failed-precondition', '이미 시작된 게임입니다.');
+  }
+  if (group.memberUids.length < 2) {
+    throw new functions.https.HttpsError('failed-precondition', '최소 2명이 필요합니다.');
+  }
+
+  const now = admin.firestore.Timestamp.now();
+  const expiresAt = new Date(now.toMillis() + 24 * 60 * 60 * 1000);
+  const firstHolder = group.memberUids[0];
+  const bombRef = db.collection('groups').doc(groupId).collection('bombs').doc();
+
+  const batch = db.batch();
+  batch.set(bombRef, {
+    id: bombRef.id,
+    groupId,
+    holderUid: firstHolder,
+    receivedAt: now,
+    expiresAt: admin.firestore.Timestamp.fromDate(expiresAt),
+    status: 'active',
+    round: 1,
+    explodedUid: null,
+  });
+  batch.update(groupRef, {
+    status: 'playing',
+    gameStartedAt: now,
+  });
+
+  await batch.commit();
+  return { success: true, bombId: bombRef.id };
 });

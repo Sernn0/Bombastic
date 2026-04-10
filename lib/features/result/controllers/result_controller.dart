@@ -2,18 +2,27 @@ import 'dart:typed_data';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../data/repositories/bomb_repository.dart';
+import '../../../data/repositories/group_repository.dart';
 import '../models/game_result_model.dart';
 
 part 'result_controller.g.dart';
 
 /// 게임 결과 계산 (폭발 기록 기반)
 @riverpod
-Future<GameResultModel> gameResult(Ref ref) async {
-  // TODO: currentGroupId 실제 값으로 연결
-  const groupId = '';
-  final bombs = await ref.read(bombRepositoryProvider).fetchExplodedBombs(groupId);
+Future<GameResultModel> gameResult(Ref ref, String groupId) async {
+  final bombs =
+      await ref.read(bombRepositoryProvider).fetchExplodedBombs(groupId);
+
+  // 그룹 정보에서 닉네임 맵 가져오기
+  final group = await ref
+      .read(groupRepositoryProvider)
+      .watchGroup(groupId)
+      .first;
+  final nicknames = group?.memberNicknames ?? {};
+  final memberUids = group?.memberUids ?? [];
 
   // uid별 폭발 횟수 집계
   final countMap = <String, int>{};
@@ -23,14 +32,14 @@ Future<GameResultModel> gameResult(Ref ref) async {
     }
   }
 
-  // 오름차순 정렬 (폭발 적을수록 상위)
-  final rankList = countMap.entries
+  // 모든 멤버를 포함한 랭킹 생성 (폭발 0회인 멤버도 포함)
+  final rankList = memberUids
       .map(
-        (e) => PlayerResultModel(
-          uid: e.key,
-          displayName: e.key, // TODO: UserModel에서 displayName 가져오기
-          explodeCount: e.value,
-          passCount: 0, // TODO: passCount 집계
+        (uid) => PlayerResultModel(
+          uid: uid,
+          displayName: nicknames[uid] ?? uid,
+          explodeCount: countMap[uid] ?? 0,
+          passCount: 0, // TODO: passCount는 별도 로그 구조 필요
         ),
       )
       .toList()
@@ -39,7 +48,7 @@ Future<GameResultModel> gameResult(Ref ref) async {
   return GameResultModel(
     groupId: groupId,
     rankList: rankList,
-    endedAt: DateTime.now(),
+    endedAt: group?.gameEndedAt ?? DateTime.now(),
   );
 }
 
@@ -54,8 +63,9 @@ class ResultController extends _$ResultController {
     state = await AsyncValue.guard(() async {
       final Uint8List? image = await screenshotCtrl.capture();
       if (image == null) throw Exception('이미지 캡처 실패');
-      // TODO: share_plus 등으로 이미지 공유 구현
-      // await Share.shareXFiles([XFile.fromData(image, mimeType: 'image/png')]);
+      await Share.shareXFiles(
+        [XFile.fromData(image, mimeType: 'image/png', name: 'bombastic_result.png')],
+      );
     });
   }
 }

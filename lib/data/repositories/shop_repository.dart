@@ -26,6 +26,16 @@ class ShopRepository {
     return snap.docs.map((d) => ShopItemModel.fromJson(d.data())).toList();
   }
 
+  /// 아이템 목록 실시간 스트림
+  Stream<List<ShopItemModel>> watchShopItems() {
+    return _firestore
+        .collection(AppConstants.shopItemsCollection)
+        .where('isAvailable', isEqualTo: true)
+        .snapshots()
+        .map((snap) =>
+            snap.docs.map((d) => ShopItemModel.fromJson(d.data())).toList());
+  }
+
   /// 아이템 구매 (트랜잭션으로 재화 차감 + 소유 목록 추가)
   Future<void> purchaseItem({
     required String uid,

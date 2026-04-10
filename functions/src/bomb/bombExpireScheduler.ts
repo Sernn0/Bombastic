@@ -67,6 +67,11 @@ export const onBombExploded = functions.firestore
     const { groupId } = context.params;
     functions.logger.info(`그룹 ${groupId} 폭탄 폭발 → 다음 라운드 시작`);
 
-    // TODO: 게임 종료 조건 체크 (라운드 수, 기간 등)
-    // TODO: 다음 라운드 폭탄 생성 로직
+    // 폭발 즉시 게임 종료
+    const groupRef = db.collection('groups').doc(groupId);
+    await groupRef.update({
+      status: 'finished',
+      gameEndedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    functions.logger.info(`그룹 ${groupId} 게임 종료`);
   });

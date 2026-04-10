@@ -30,6 +30,7 @@ dependencies:
 
   # 공유 카드
   screenshot: ^3.0.0
+  share_plus: ^10.1.4
 
   # UI 유틸
   intl: ^0.19.0

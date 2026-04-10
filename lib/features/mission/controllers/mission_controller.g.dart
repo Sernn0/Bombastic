@@ -8,24 +8,24 @@ part of 'mission_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 미션 목록
+/// 미션 목록 (실시간)
 
 @ProviderFor(missions)
 final missionsProvider = MissionsProvider._();
 
-/// 미션 목록
+/// 미션 목록 (실시간)
 
 final class MissionsProvider
     extends
         $FunctionalProvider<
           AsyncValue<List<MissionModel>>,
           List<MissionModel>,
-          FutureOr<List<MissionModel>>
+          Stream<List<MissionModel>>
         >
     with
         $FutureModifier<List<MissionModel>>,
-        $FutureProvider<List<MissionModel>> {
-  /// 미션 목록
+        $StreamProvider<List<MissionModel>> {
+  /// 미션 목록 (실시간)
   MissionsProvider._()
     : super(
         from: null,
@@ -42,17 +42,17 @@ final class MissionsProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<MissionModel>> $createElement(
+  $StreamProviderElement<List<MissionModel>> $createElement(
     $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  ) => $StreamProviderElement(pointer);
 
   @override
-  FutureOr<List<MissionModel>> create(Ref ref) {
+  Stream<List<MissionModel>> create(Ref ref) {
     return missions(ref);
   }
 }
 
-String _$missionsHash() => r'8e9faaa419465d314917a3340e3488016b1244cb';
+String _$missionsHash() => r'1d5db8de4cd9d0ecb0b2924ab67346cffab701f5';
 
 @ProviderFor(MissionController)
 final missionControllerProvider = MissionControllerProvider._();

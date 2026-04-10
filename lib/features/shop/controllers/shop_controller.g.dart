@@ -8,24 +8,24 @@ part of 'shop_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 상점 아이템 목록
+/// 상점 아이템 목록 (실시간)
 
 @ProviderFor(shopItems)
 final shopItemsProvider = ShopItemsProvider._();
 
-/// 상점 아이템 목록
+/// 상점 아이템 목록 (실시간)
 
 final class ShopItemsProvider
     extends
         $FunctionalProvider<
           AsyncValue<List<ShopItemModel>>,
           List<ShopItemModel>,
-          FutureOr<List<ShopItemModel>>
+          Stream<List<ShopItemModel>>
         >
     with
         $FutureModifier<List<ShopItemModel>>,
-        $FutureProvider<List<ShopItemModel>> {
-  /// 상점 아이템 목록
+        $StreamProvider<List<ShopItemModel>> {
+  /// 상점 아이템 목록 (실시간)
   ShopItemsProvider._()
     : super(
         from: null,
@@ -42,17 +42,17 @@ final class ShopItemsProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<ShopItemModel>> $createElement(
+  $StreamProviderElement<List<ShopItemModel>> $createElement(
     $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  ) => $StreamProviderElement(pointer);
 
   @override
-  FutureOr<List<ShopItemModel>> create(Ref ref) {
+  Stream<List<ShopItemModel>> create(Ref ref) {
     return shopItems(ref);
   }
 }
 
-String _$shopItemsHash() => r'4c726ee35b90e6ea309a45c517b103236394e647';
+String _$shopItemsHash() => r'932de6eb1cf63abffdd8da7de6d9febeaf624f17';
 
 @ProviderFor(ShopController)
 final shopControllerProvider = ShopControllerProvider._();
