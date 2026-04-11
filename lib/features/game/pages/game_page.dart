@@ -318,12 +318,15 @@ class _BombCard extends ConsumerWidget {
                   color: isMyBomb ? Colors.red : Colors.grey,
                 ),
                 const SizedBox(width: 8),
-                Text(
+                Flexible(
+                  child: Text(
                   isMyBomb ? '내가 폭탄을 보유 중!' : '현재 보유: $holderNickname',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                     color: isMyBomb ? Colors.red : null,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 if (bomb.hasPenalty) ...[
