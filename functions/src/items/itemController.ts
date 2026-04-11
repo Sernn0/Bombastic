@@ -1,6 +1,8 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
+import { bombDefaultDurationMs } from '../core/gameConfig';
+
 const db = admin.firestore();
 
 /**
@@ -134,7 +136,7 @@ export const useItem = functions.https.onCall(async (data, context) => {
         holderUid: target,
         receivedAt: now2,
         expiresAt: admin.firestore.Timestamp.fromDate(
-          new Date(now2.toMillis() + 24 * 60 * 60 * 1000),
+          new Date(now2.toMillis() + bombDefaultDurationMs),
         ),
         status: 'active',
         round: 1,

@@ -1,6 +1,8 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 
+import { bombDefaultDurationMs } from '../core/gameConfig';
+
 const db = admin.firestore();
 
 /**
@@ -24,7 +26,7 @@ export const onGroupMemberJoined = functions.firestore
     functions.logger.info(`그룹 ${groupId} 4명 완성 → 게임 시작`);
 
     const now = admin.firestore.Timestamp.now();
-    const expiresAt = new Date(now.toMillis() + 24 * 60 * 60 * 1000); // 24시간 후
+    const expiresAt = new Date(now.toMillis() + bombDefaultDurationMs);
 
     // 첫 폭탄 생성 (첫 번째 멤버가 보유)
     const firstHolder = (after.memberUids as string[])[0];
@@ -113,7 +115,7 @@ export const startGame = functions.https.onCall(async (data, context) => {
   }
 
   const now = admin.firestore.Timestamp.now();
-  const expiresAt = new Date(now.toMillis() + 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(now.toMillis() + bombDefaultDurationMs);
   const firstHolder = group.memberUids[0];
   const bombRef = db.collection('groups').doc(groupId).collection('bombs').doc();
 
