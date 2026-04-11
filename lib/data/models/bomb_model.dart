@@ -17,6 +17,7 @@ abstract class BombModel with _$BombModel {
     required BombStatus status,
     @Default(0) int round,           // 몇 번째 라운드
     String? explodedUid,             // 폭발 당한 사람
+    @Default(false) bool hasPenalty, // 패널티 강화 여부
   }) = _BombModel;
 
   factory BombModel.fromJson(Map<String, dynamic> json) =>

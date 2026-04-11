@@ -8,12 +8,12 @@ part of 'game_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 현재 활성 폭탄 실시간 스트림
+/// 현재 활성 폭탄 실시간 스트림 (단일, 하위 호환용)
 
 @ProviderFor(activeBomb)
 final activeBombProvider = ActiveBombFamily._();
 
-/// 현재 활성 폭탄 실시간 스트림
+/// 현재 활성 폭탄 실시간 스트림 (단일, 하위 호환용)
 
 final class ActiveBombProvider
     extends
@@ -23,7 +23,7 @@ final class ActiveBombProvider
           Stream<BombModel?>
         >
     with $FutureModifier<BombModel?>, $StreamProvider<BombModel?> {
-  /// 현재 활성 폭탄 실시간 스트림
+  /// 현재 활성 폭탄 실시간 스트림 (단일, 하위 호환용)
   ActiveBombProvider._({
     required ActiveBombFamily super.from,
     required String super.argument,
@@ -69,7 +69,7 @@ final class ActiveBombProvider
 
 String _$activeBombHash() => r'0655d94825bac943b0bffa7c2ed15a38aed1c6f8';
 
-/// 현재 활성 폭탄 실시간 스트림
+/// 현재 활성 폭탄 실시간 스트림 (단일, 하위 호환용)
 
 final class ActiveBombFamily extends $Family
     with $FunctionalFamilyOverride<Stream<BombModel?>, String> {
@@ -82,7 +82,7 @@ final class ActiveBombFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// 현재 활성 폭탄 실시간 스트림
+  /// 현재 활성 폭탄 실시간 스트림 (단일, 하위 호환용)
 
   ActiveBombProvider call(String groupId) =>
       ActiveBombProvider._(argument: groupId, from: this);
@@ -91,16 +91,100 @@ final class ActiveBombFamily extends $Family
   String toString() => r'activeBombProvider';
 }
 
-/// 내 차례인지 여부
+/// 모든 활성 폭탄 실시간 스트림 (다중 폭탄 지원)
+
+@ProviderFor(activeBombs)
+final activeBombsProvider = ActiveBombsFamily._();
+
+/// 모든 활성 폭탄 실시간 스트림 (다중 폭탄 지원)
+
+final class ActiveBombsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<BombModel>>,
+          List<BombModel>,
+          Stream<List<BombModel>>
+        >
+    with $FutureModifier<List<BombModel>>, $StreamProvider<List<BombModel>> {
+  /// 모든 활성 폭탄 실시간 스트림 (다중 폭탄 지원)
+  ActiveBombsProvider._({
+    required ActiveBombsFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'activeBombsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$activeBombsHash();
+
+  @override
+  String toString() {
+    return r'activeBombsProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<List<BombModel>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<BombModel>> create(Ref ref) {
+    final argument = this.argument as String;
+    return activeBombs(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ActiveBombsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$activeBombsHash() => r'69ee8c31d51feb7776c831ae7c98bc7364301b6c';
+
+/// 모든 활성 폭탄 실시간 스트림 (다중 폭탄 지원)
+
+final class ActiveBombsFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<List<BombModel>>, String> {
+  ActiveBombsFamily._()
+    : super(
+        retry: null,
+        name: r'activeBombsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// 모든 활성 폭탄 실시간 스트림 (다중 폭탄 지원)
+
+  ActiveBombsProvider call(String groupId) =>
+      ActiveBombsProvider._(argument: groupId, from: this);
+
+  @override
+  String toString() => r'activeBombsProvider';
+}
+
+/// 내 차례인지 여부 (다중 폭탄 중 하나라도 내가 보유하면 true)
 
 @ProviderFor(isMyTurn)
 final isMyTurnProvider = IsMyTurnFamily._();
 
-/// 내 차례인지 여부
+/// 내 차례인지 여부 (다중 폭탄 중 하나라도 내가 보유하면 true)
 
 final class IsMyTurnProvider extends $FunctionalProvider<bool, bool, bool>
     with $Provider<bool> {
-  /// 내 차례인지 여부
+  /// 내 차례인지 여부 (다중 폭탄 중 하나라도 내가 보유하면 true)
   IsMyTurnProvider._({
     required IsMyTurnFamily super.from,
     required String super.argument,
@@ -152,9 +236,9 @@ final class IsMyTurnProvider extends $FunctionalProvider<bool, bool, bool>
   }
 }
 
-String _$isMyTurnHash() => r'6bd4c856076b4c1b00e2e14455a8f5a205aad87e';
+String _$isMyTurnHash() => r'8cadcf2220e92262e699eae4e27b4ba159833140';
 
-/// 내 차례인지 여부
+/// 내 차례인지 여부 (다중 폭탄 중 하나라도 내가 보유하면 true)
 
 final class IsMyTurnFamily extends $Family
     with $FunctionalFamilyOverride<bool, String> {
@@ -167,7 +251,7 @@ final class IsMyTurnFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// 내 차례인지 여부
+  /// 내 차례인지 여부 (다중 폭탄 중 하나라도 내가 보유하면 true)
 
   IsMyTurnProvider call(String groupId) =>
       IsMyTurnProvider._(argument: groupId, from: this);
@@ -208,7 +292,7 @@ final class GameControllerProvider
   }
 }
 
-String _$gameControllerHash() => r'069cf5c60b852d9878a5a7bbaa893fe4040566c6';
+String _$gameControllerHash() => r'54554a1e645fbe134c19563b02ef55d3964c1327';
 
 abstract class _$GameController extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();

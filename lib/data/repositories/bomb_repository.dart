@@ -19,7 +19,7 @@ class BombRepository {
   CollectionReference<Map<String, dynamic>> _bombsOf(String groupId) =>
       _firestore.collection('groups').doc(groupId).collection('bombs');
 
-  /// 현재 활성 폭탄 실시간 스트림
+  /// 현재 활성 폭탄 실시간 스트림 (단일, 하위 호환용)
   Stream<BombModel?> watchActiveBomb(String groupId) {
     return _bombsOf(groupId)
         .where('status', isEqualTo: BombStatus.active.name)
@@ -29,6 +29,15 @@ class BombRepository {
       if (snap.docs.isEmpty) return null;
       return BombModel.fromJson(snap.docs.first.data());
     });
+  }
+
+  /// 모든 활성 폭탄 실시간 스트림 (다중 폭탄 지원)
+  Stream<List<BombModel>> watchActiveBombs(String groupId) {
+    return _bombsOf(groupId)
+        .where('status', isEqualTo: BombStatus.active.name)
+        .snapshots()
+        .map((snap) =>
+            snap.docs.map((d) => BombModel.fromJson(d.data())).toList());
   }
 
   /// 폭탄 다음 사람에게 전달

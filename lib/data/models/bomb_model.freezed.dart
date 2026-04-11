@@ -19,7 +19,8 @@ mixin _$BombModel {
  DateTime get receivedAt;// 받은 시각
  DateTime get expiresAt;// 만료 시각
  BombStatus get status; int get round;// 몇 번째 라운드
- String? get explodedUid;
+ String? get explodedUid;// 폭발 당한 사람
+ bool get hasPenalty;
 /// Create a copy of BombModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -32,16 +33,16 @@ $BombModelCopyWith<BombModel> get copyWith => _$BombModelCopyWithImpl<BombModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BombModel&&(identical(other.id, id) || other.id == id)&&(identical(other.groupId, groupId) || other.groupId == groupId)&&(identical(other.holderUid, holderUid) || other.holderUid == holderUid)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.status, status) || other.status == status)&&(identical(other.round, round) || other.round == round)&&(identical(other.explodedUid, explodedUid) || other.explodedUid == explodedUid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BombModel&&(identical(other.id, id) || other.id == id)&&(identical(other.groupId, groupId) || other.groupId == groupId)&&(identical(other.holderUid, holderUid) || other.holderUid == holderUid)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.status, status) || other.status == status)&&(identical(other.round, round) || other.round == round)&&(identical(other.explodedUid, explodedUid) || other.explodedUid == explodedUid)&&(identical(other.hasPenalty, hasPenalty) || other.hasPenalty == hasPenalty));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,groupId,holderUid,receivedAt,expiresAt,status,round,explodedUid);
+int get hashCode => Object.hash(runtimeType,id,groupId,holderUid,receivedAt,expiresAt,status,round,explodedUid,hasPenalty);
 
 @override
 String toString() {
-  return 'BombModel(id: $id, groupId: $groupId, holderUid: $holderUid, receivedAt: $receivedAt, expiresAt: $expiresAt, status: $status, round: $round, explodedUid: $explodedUid)';
+  return 'BombModel(id: $id, groupId: $groupId, holderUid: $holderUid, receivedAt: $receivedAt, expiresAt: $expiresAt, status: $status, round: $round, explodedUid: $explodedUid, hasPenalty: $hasPenalty)';
 }
 
 
@@ -52,7 +53,7 @@ abstract mixin class $BombModelCopyWith<$Res>  {
   factory $BombModelCopyWith(BombModel value, $Res Function(BombModel) _then) = _$BombModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String groupId, String holderUid, DateTime receivedAt, DateTime expiresAt, BombStatus status, int round, String? explodedUid
+ String id, String groupId, String holderUid, DateTime receivedAt, DateTime expiresAt, BombStatus status, int round, String? explodedUid, bool hasPenalty
 });
 
 
@@ -69,7 +70,7 @@ class _$BombModelCopyWithImpl<$Res>
 
 /// Create a copy of BombModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? groupId = null,Object? holderUid = null,Object? receivedAt = null,Object? expiresAt = null,Object? status = null,Object? round = null,Object? explodedUid = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? groupId = null,Object? holderUid = null,Object? receivedAt = null,Object? expiresAt = null,Object? status = null,Object? round = null,Object? explodedUid = freezed,Object? hasPenalty = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,groupId: null == groupId ? _self.groupId : groupId // ignore: cast_nullable_to_non_nullable
@@ -79,7 +80,8 @@ as DateTime,expiresAt: null == expiresAt ? _self.expiresAt : expiresAt // ignore
 as DateTime,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as BombStatus,round: null == round ? _self.round : round // ignore: cast_nullable_to_non_nullable
 as int,explodedUid: freezed == explodedUid ? _self.explodedUid : explodedUid // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,hasPenalty: null == hasPenalty ? _self.hasPenalty : hasPenalty // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -164,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String groupId,  String holderUid,  DateTime receivedAt,  DateTime expiresAt,  BombStatus status,  int round,  String? explodedUid)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String groupId,  String holderUid,  DateTime receivedAt,  DateTime expiresAt,  BombStatus status,  int round,  String? explodedUid,  bool hasPenalty)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BombModel() when $default != null:
-return $default(_that.id,_that.groupId,_that.holderUid,_that.receivedAt,_that.expiresAt,_that.status,_that.round,_that.explodedUid);case _:
+return $default(_that.id,_that.groupId,_that.holderUid,_that.receivedAt,_that.expiresAt,_that.status,_that.round,_that.explodedUid,_that.hasPenalty);case _:
   return orElse();
 
 }
@@ -185,10 +187,10 @@ return $default(_that.id,_that.groupId,_that.holderUid,_that.receivedAt,_that.ex
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String groupId,  String holderUid,  DateTime receivedAt,  DateTime expiresAt,  BombStatus status,  int round,  String? explodedUid)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String groupId,  String holderUid,  DateTime receivedAt,  DateTime expiresAt,  BombStatus status,  int round,  String? explodedUid,  bool hasPenalty)  $default,) {final _that = this;
 switch (_that) {
 case _BombModel():
-return $default(_that.id,_that.groupId,_that.holderUid,_that.receivedAt,_that.expiresAt,_that.status,_that.round,_that.explodedUid);case _:
+return $default(_that.id,_that.groupId,_that.holderUid,_that.receivedAt,_that.expiresAt,_that.status,_that.round,_that.explodedUid,_that.hasPenalty);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +207,10 @@ return $default(_that.id,_that.groupId,_that.holderUid,_that.receivedAt,_that.ex
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String groupId,  String holderUid,  DateTime receivedAt,  DateTime expiresAt,  BombStatus status,  int round,  String? explodedUid)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String groupId,  String holderUid,  DateTime receivedAt,  DateTime expiresAt,  BombStatus status,  int round,  String? explodedUid,  bool hasPenalty)?  $default,) {final _that = this;
 switch (_that) {
 case _BombModel() when $default != null:
-return $default(_that.id,_that.groupId,_that.holderUid,_that.receivedAt,_that.expiresAt,_that.status,_that.round,_that.explodedUid);case _:
+return $default(_that.id,_that.groupId,_that.holderUid,_that.receivedAt,_that.expiresAt,_that.status,_that.round,_that.explodedUid,_that.hasPenalty);case _:
   return null;
 
 }
@@ -220,7 +222,7 @@ return $default(_that.id,_that.groupId,_that.holderUid,_that.receivedAt,_that.ex
 @JsonSerializable()
 
 class _BombModel implements BombModel {
-  const _BombModel({required this.id, required this.groupId, required this.holderUid, required this.receivedAt, required this.expiresAt, required this.status, this.round = 0, this.explodedUid});
+  const _BombModel({required this.id, required this.groupId, required this.holderUid, required this.receivedAt, required this.expiresAt, required this.status, this.round = 0, this.explodedUid, this.hasPenalty = false});
   factory _BombModel.fromJson(Map<String, dynamic> json) => _$BombModelFromJson(json);
 
 @override final  String id;
@@ -235,6 +237,8 @@ class _BombModel implements BombModel {
 @override@JsonKey() final  int round;
 // 몇 번째 라운드
 @override final  String? explodedUid;
+// 폭발 당한 사람
+@override@JsonKey() final  bool hasPenalty;
 
 /// Create a copy of BombModel
 /// with the given fields replaced by the non-null parameter values.
@@ -249,16 +253,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BombModel&&(identical(other.id, id) || other.id == id)&&(identical(other.groupId, groupId) || other.groupId == groupId)&&(identical(other.holderUid, holderUid) || other.holderUid == holderUid)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.status, status) || other.status == status)&&(identical(other.round, round) || other.round == round)&&(identical(other.explodedUid, explodedUid) || other.explodedUid == explodedUid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BombModel&&(identical(other.id, id) || other.id == id)&&(identical(other.groupId, groupId) || other.groupId == groupId)&&(identical(other.holderUid, holderUid) || other.holderUid == holderUid)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt)&&(identical(other.status, status) || other.status == status)&&(identical(other.round, round) || other.round == round)&&(identical(other.explodedUid, explodedUid) || other.explodedUid == explodedUid)&&(identical(other.hasPenalty, hasPenalty) || other.hasPenalty == hasPenalty));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,groupId,holderUid,receivedAt,expiresAt,status,round,explodedUid);
+int get hashCode => Object.hash(runtimeType,id,groupId,holderUid,receivedAt,expiresAt,status,round,explodedUid,hasPenalty);
 
 @override
 String toString() {
-  return 'BombModel(id: $id, groupId: $groupId, holderUid: $holderUid, receivedAt: $receivedAt, expiresAt: $expiresAt, status: $status, round: $round, explodedUid: $explodedUid)';
+  return 'BombModel(id: $id, groupId: $groupId, holderUid: $holderUid, receivedAt: $receivedAt, expiresAt: $expiresAt, status: $status, round: $round, explodedUid: $explodedUid, hasPenalty: $hasPenalty)';
 }
 
 
@@ -269,7 +273,7 @@ abstract mixin class _$BombModelCopyWith<$Res> implements $BombModelCopyWith<$Re
   factory _$BombModelCopyWith(_BombModel value, $Res Function(_BombModel) _then) = __$BombModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String groupId, String holderUid, DateTime receivedAt, DateTime expiresAt, BombStatus status, int round, String? explodedUid
+ String id, String groupId, String holderUid, DateTime receivedAt, DateTime expiresAt, BombStatus status, int round, String? explodedUid, bool hasPenalty
 });
 
 
@@ -286,7 +290,7 @@ class __$BombModelCopyWithImpl<$Res>
 
 /// Create a copy of BombModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? groupId = null,Object? holderUid = null,Object? receivedAt = null,Object? expiresAt = null,Object? status = null,Object? round = null,Object? explodedUid = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? groupId = null,Object? holderUid = null,Object? receivedAt = null,Object? expiresAt = null,Object? status = null,Object? round = null,Object? explodedUid = freezed,Object? hasPenalty = null,}) {
   return _then(_BombModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,groupId: null == groupId ? _self.groupId : groupId // ignore: cast_nullable_to_non_nullable
@@ -296,7 +300,8 @@ as DateTime,expiresAt: null == expiresAt ? _self.expiresAt : expiresAt // ignore
 as DateTime,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as BombStatus,round: null == round ? _self.round : round // ignore: cast_nullable_to_non_nullable
 as int,explodedUid: freezed == explodedUid ? _self.explodedUid : explodedUid // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,hasPenalty: null == hasPenalty ? _self.hasPenalty : hasPenalty // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

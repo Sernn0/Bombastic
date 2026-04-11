@@ -15,6 +15,7 @@ _BombModel _$BombModelFromJson(Map<String, dynamic> json) => _BombModel(
   status: $enumDecode(_$BombStatusEnumMap, json['status']),
   round: (json['round'] as num?)?.toInt() ?? 0,
   explodedUid: json['explodedUid'] as String?,
+  hasPenalty: json['hasPenalty'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$BombModelToJson(_BombModel instance) =>
@@ -27,6 +28,7 @@ Map<String, dynamic> _$BombModelToJson(_BombModel instance) =>
       'status': _$BombStatusEnumMap[instance.status]!,
       'round': instance.round,
       'explodedUid': instance.explodedUid,
+      'hasPenalty': instance.hasPenalty,
     };
 
 const _$BombStatusEnumMap = {

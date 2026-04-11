@@ -10,19 +10,26 @@ import '../../../data/repositories/group_repository.dart';
 
 part 'game_controller.g.dart';
 
-/// 현재 활성 폭탄 실시간 스트림
+/// 현재 활성 폭탄 실시간 스트림 (단일, 하위 호환용)
 @riverpod
 Stream<BombModel?> activeBomb(Ref ref, String groupId) {
   if (groupId.isEmpty) return const Stream.empty();
   return ref.watch(bombRepositoryProvider).watchActiveBomb(groupId);
 }
 
-/// 내 차례인지 여부
+/// 모든 활성 폭탄 실시간 스트림 (다중 폭탄 지원)
+@riverpod
+Stream<List<BombModel>> activeBombs(Ref ref, String groupId) {
+  if (groupId.isEmpty) return const Stream.empty();
+  return ref.watch(bombRepositoryProvider).watchActiveBombs(groupId);
+}
+
+/// 내 차례인지 여부 (다중 폭탄 중 하나라도 내가 보유하면 true)
 @riverpod
 bool isMyTurn(Ref ref, String groupId) {
-  final bomb = ref.watch(activeBombProvider(groupId)).asData?.value;
+  final bombs = ref.watch(activeBombsProvider(groupId)).asData?.value ?? [];
   final uid = ref.watch(currentUidProvider);
-  return bomb?.holderUid == uid;
+  return bombs.any((b) => b.holderUid == uid);
 }
 
 @riverpod
@@ -146,19 +153,24 @@ class GameController extends _$GameController {
     });
   }
 
-  /// 아이템 사용 (Cloud Function 경유)
-  Future<void> useItem({
+  /// 아이템 사용 (Cloud Function 경유).
+  /// 반환값: addBomb 시 targetUid, 그 외 null
+  Future<String?> useItem({
     required String groupId,
     required String itemId,
     int? days,
   }) async {
+    String? targetUid;
     await _runGuarded(() async {
       final data = <String, dynamic>{'groupId': groupId, 'itemId': itemId};
       if (days != null) data['days'] = days;
-      await callHttpsCallableWithRegionFallback(
+      final result = await callHttpsCallableWithRegionFallback(
         functionName: 'useItem',
         data: data,
       );
+      final resultData = result.data as Map<Object?, Object?>?;
+      targetUid = resultData?['targetUid'] as String?;
     });
+    return targetUid;
   }
 }

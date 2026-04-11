@@ -8,20 +8,20 @@ part of 'timer_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 폭탄 남은 시간을 HH:MM:SS 문자열로 제공하는 provider
-/// activeBomb의 expiresAt 기준으로 1초마다 갱신
+/// 내가 보유한 폭탄의 남은 시간을 HH:MM:SS 문자열로 제공.
+/// 내 폭탄이 없으면 가장 만료가 임박한 활성 폭탄 기준.
 
 @ProviderFor(bombTimer)
 final bombTimerProvider = BombTimerFamily._();
 
-/// 폭탄 남은 시간을 HH:MM:SS 문자열로 제공하는 provider
-/// activeBomb의 expiresAt 기준으로 1초마다 갱신
+/// 내가 보유한 폭탄의 남은 시간을 HH:MM:SS 문자열로 제공.
+/// 내 폭탄이 없으면 가장 만료가 임박한 활성 폭탄 기준.
 
 final class BombTimerProvider
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  /// 폭탄 남은 시간을 HH:MM:SS 문자열로 제공하는 provider
-  /// activeBomb의 expiresAt 기준으로 1초마다 갱신
+  /// 내가 보유한 폭탄의 남은 시간을 HH:MM:SS 문자열로 제공.
+  /// 내 폭탄이 없으면 가장 만료가 임박한 활성 폭탄 기준.
   BombTimerProvider._({
     required BombTimerFamily super.from,
     required String super.argument,
@@ -73,10 +73,10 @@ final class BombTimerProvider
   }
 }
 
-String _$bombTimerHash() => r'ac844da51de628d8380ce3795686c23f2d098b99';
+String _$bombTimerHash() => r'bd848230d0e4ddd9339524a90392659bb90d2b5f';
 
-/// 폭탄 남은 시간을 HH:MM:SS 문자열로 제공하는 provider
-/// activeBomb의 expiresAt 기준으로 1초마다 갱신
+/// 내가 보유한 폭탄의 남은 시간을 HH:MM:SS 문자열로 제공.
+/// 내 폭탄이 없으면 가장 만료가 임박한 활성 폭탄 기준.
 
 final class BombTimerFamily extends $Family
     with $FunctionalFamilyOverride<String, String> {
@@ -89,8 +89,8 @@ final class BombTimerFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// 폭탄 남은 시간을 HH:MM:SS 문자열로 제공하는 provider
-  /// activeBomb의 expiresAt 기준으로 1초마다 갱신
+  /// 내가 보유한 폭탄의 남은 시간을 HH:MM:SS 문자열로 제공.
+  /// 내 폭탄이 없으면 가장 만료가 임박한 활성 폭탄 기준.
 
   BombTimerProvider call(String groupId) =>
       BombTimerProvider._(argument: groupId, from: this);
