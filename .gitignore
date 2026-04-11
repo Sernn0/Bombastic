@@ -36,6 +36,11 @@ functions/node_modules/
 functions/node_modules_old/
 functions/lib/
 
+# Firebase emulator logs
+firestore-debug.log
+firebase-debug.log
+ui-debug.log
+
 # IDE
 .idea/
 .vscode/
