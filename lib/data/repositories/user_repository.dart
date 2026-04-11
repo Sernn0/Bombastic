@@ -47,10 +47,24 @@ class UserRepository {
     required String groupId,
     required String nickname,
   }) async {
-    await _users.doc(uid).update({
-      'groupIds': FieldValue.arrayUnion([groupId]),
-      'groupNicknames.$groupId': nickname,
-    });
+    try {
+      await _users.doc(uid).update({
+        'groupIds': FieldValue.arrayUnion([groupId]),
+        'groupNicknames.$groupId': nickname,
+      });
+    } on FirebaseException catch (e) {
+      if (e.code == 'not-found') {
+        final newUser = UserModel(
+          uid: uid,
+          displayName: 'User',
+          groupIds: [groupId],
+          groupNicknames: {groupId: nickname},
+        );
+        await _users.doc(uid).set(newUser.toJson(), SetOptions(merge: true));
+      } else {
+        rethrow;
+      }
+    }
   }
 
   /// 그룹별 닉네임 업데이트
@@ -59,9 +73,23 @@ class UserRepository {
     required String groupId,
     required String nickname,
   }) async {
-    await _users.doc(uid).update({
-      'groupNicknames.$groupId': nickname,
-    });
+    try {
+      await _users.doc(uid).update({
+        'groupNicknames.$groupId': nickname,
+      });
+    } on FirebaseException catch (e) {
+      if (e.code == 'not-found') {
+        final newUser = UserModel(
+          uid: uid,
+          displayName: 'User',
+          groupIds: [groupId],
+          groupNicknames: {groupId: nickname},
+        );
+        await _users.doc(uid).set(newUser.toJson(), SetOptions(merge: true));
+      } else {
+        rethrow;
+      }
+    }
   }
 
   /// 그룹 탈퇴 시 groupIds에서 제거 및 닉네임 삭제
@@ -69,9 +97,15 @@ class UserRepository {
     required String uid,
     required String groupId,
   }) async {
-    await _users.doc(uid).update({
-      'groupIds': FieldValue.arrayRemove([groupId]),
-      'groupNicknames.$groupId': FieldValue.delete(),
-    });
+    try {
+      await _users.doc(uid).update({
+        'groupIds': FieldValue.arrayRemove([groupId]),
+        'groupNicknames.$groupId': FieldValue.delete(),
+      });
+    } on FirebaseException catch (e) {
+      if (e.code != 'not-found') {
+        rethrow;
+      }
+    }
   }
 }

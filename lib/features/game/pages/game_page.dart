@@ -34,38 +34,12 @@ class GamePage extends ConsumerWidget {
           );
         }
 
-        final isPlaying = group.status == GroupStatus.playing;
-
-        return PopScope(
-          canPop: !isPlaying,
-          onPopInvokedWithResult: (didPop, _) {
-            if (!didPop && isPlaying) {
-              _showExitBlockedDialog(context);
-            }
-          },
-          child: switch (group.status) {
-            GroupStatus.waiting => _WaitingView(group: group),
-            GroupStatus.playing => _PlayingView(groupId: groupId),
-            GroupStatus.finished => _FinishedView(group: group),
-          },
-        );
+        return switch (group.status) {
+          GroupStatus.waiting => _WaitingView(group: group),
+          GroupStatus.playing => _PlayingView(groupId: groupId),
+          GroupStatus.finished => _FinishedView(group: group),
+        };
       },
-    );
-  }
-
-  static void _showExitBlockedDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('나갈 수 없습니다'),
-        content: const Text('게임 진행 중에는 나갈 수 없습니다.\n그룹은 계속 유지됩니다.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('확인'),
-          ),
-        ],
-      ),
     );
   }
 }
