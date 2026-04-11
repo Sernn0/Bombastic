@@ -202,8 +202,9 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView> {
         actions: [
           IconButton(
             icon: const Icon(Icons.developer_mode),
-            onPressed: () => showDialog(
+            onPressed: () => showDialog<void>(
               context: context,
+              barrierDismissible: false,
               builder: (ctx) => AdminCliDialog(groupId: widget.groupId),
             ),
           ),

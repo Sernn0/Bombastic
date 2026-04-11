@@ -20,7 +20,7 @@ class AdminController extends _$AdminController {
     if (uid == null) throw Exception('로그인이 필요합니다.');
 
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+    final next = await AsyncValue.guard(() async {
       final firestore = ref.read(firestoreProvider);
       
       final parts = command.trim().split(' ');
@@ -86,5 +86,6 @@ class AdminController extends _$AdminController {
           throw Exception('알 수 없는 명령어: $cmd');
       }
     });
+    if (ref.mounted) state = next;
   }
 }
