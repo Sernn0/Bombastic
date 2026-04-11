@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -36,27 +38,44 @@ class ShopRepository {
             snap.docs.map((d) => ShopItemModel.fromJson(d.data())).toList());
   }
 
-  /// 아이템 구매 (트랜잭션으로 재화 차감 + 소유 목록 추가)
-  Future<void> purchaseItem({
-    required String uid,
-    required ShopItemModel item,
-  }) async {
-    final userRef = _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(uid);
+  /// 랜덤박스 구매 — 재화 차감 후 가중치 기반으로 아이템 1개 지급, 획득 아이템 반환
+  Future<ShopItemModel> purchaseRandomBox({required String uid}) async {
+    final items = await fetchItems();
+    final pool = items.where((i) => i.probability > 0).toList();
+    if (pool.isEmpty) throw Exception('뽑기 가능한 아이템이 없습니다.');
+
+    final userRef =
+        _firestore.collection(AppConstants.usersCollection).doc(uid);
+
+    late ShopItemModel obtained;
 
     await _firestore.runTransaction((tx) async {
       final userSnap = await tx.get(userRef);
       final currentCurrency = (userSnap.data()?['currency'] as int?) ?? 0;
 
-      if (currentCurrency < item.price) {
+      if (currentCurrency < CurrencyConstants.randomBoxPrice) {
         throw Exception('재화가 부족합니다.');
       }
 
+      // 가중치 기반 랜덤 선택
+      final totalWeight = pool.fold(0, (acc, i) => acc + i.probability);
+      final roll = Random().nextInt(totalWeight);
+      var cumulative = 0;
+      obtained = pool.last;
+      for (final item in pool) {
+        cumulative += item.probability;
+        if (roll < cumulative) {
+          obtained = item;
+          break;
+        }
+      }
+
       tx.update(userRef, {
-        'currency': currentCurrency - item.price,
-        'ownedItemIds': FieldValue.arrayUnion([item.id]),
+        'currency': currentCurrency - CurrencyConstants.randomBoxPrice,
+        'ownedItemIds': FieldValue.arrayUnion([obtained.id]),
       });
     });
+
+    return obtained;
   }
 }

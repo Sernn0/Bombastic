@@ -31,12 +31,6 @@ abstract final class CurrencyConstants {
   /// 미션 완료 보상 재화
   static const int missionReward = 30;
 
-  /// 아이템 기본 가격 — 순서 바꾸기
-  static const int swapOrderPrice = 50;
-
-  /// 아이템 기본 가격 — 폭탄 추가
-  static const int addBombPrice = 80;
-
-  /// 아이템 기본 가격 — 패널티 강화
-  static const int enhancePenaltyPrice = 100;
+  /// 랜덤박스 가격
+  static const int randomBoxPrice = 100;
 }

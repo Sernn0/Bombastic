@@ -26,6 +26,8 @@ abstract class ShopItemModel with _$ShopItemModel {
     required ItemType type,
     @Default(UsageType.always) UsageType usageType,
     @Default(true) bool isAvailable,
+    /// 랜덤박스 당첨 가중치 (전체 합 기준 비율)
+    @Default(0) int probability,
   }) = _ShopItemModel;
 
   factory ShopItemModel.fromJson(Map<String, dynamic> json) =>

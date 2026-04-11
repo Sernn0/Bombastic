@@ -15,15 +15,20 @@ Stream<List<ShopItemModel>> shopItems(Ref ref) {
 @riverpod
 class ShopController extends _$ShopController {
   @override
-  AsyncValue<void> build() => const AsyncData(null);
+  AsyncValue<ShopItemModel?> build() => const AsyncData(null);
 
-  Future<void> purchaseItem(ShopItemModel item) async {
+  /// 랜덤박스 구매 — 성공 시 state에 획득 아이템 저장
+  Future<ShopItemModel?> purchaseRandomBox() async {
     final uid = ref.read(currentUidProvider);
-    if (uid == null) return;
+    if (uid == null) return null;
 
     state = const AsyncLoading();
-    state = await AsyncValue.guard(
-      () => ref.read(shopRepositoryProvider).purchaseItem(uid: uid, item: item),
-    );
+    ShopItemModel? obtained;
+    state = await AsyncValue.guard(() async {
+      obtained =
+          await ref.read(shopRepositoryProvider).purchaseRandomBox(uid: uid);
+      return obtained;
+    });
+    return obtained;
   }
 }

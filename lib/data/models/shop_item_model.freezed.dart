@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ShopItemModel {
 
- String get id; String get name; String get description; int get price; ItemType get type; UsageType get usageType; bool get isAvailable;
+ String get id; String get name; String get description; int get price; ItemType get type; UsageType get usageType; bool get isAvailable;/// 랜덤박스 당첨 가중치 (전체 합 기준 비율)
+ int get probability;
 /// Create a copy of ShopItemModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +29,16 @@ $ShopItemModelCopyWith<ShopItemModel> get copyWith => _$ShopItemModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShopItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.price, price) || other.price == price)&&(identical(other.type, type) || other.type == type)&&(identical(other.usageType, usageType) || other.usageType == usageType)&&(identical(other.isAvailable, isAvailable) || other.isAvailable == isAvailable));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShopItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.price, price) || other.price == price)&&(identical(other.type, type) || other.type == type)&&(identical(other.usageType, usageType) || other.usageType == usageType)&&(identical(other.isAvailable, isAvailable) || other.isAvailable == isAvailable)&&(identical(other.probability, probability) || other.probability == probability));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,description,price,type,usageType,isAvailable);
+int get hashCode => Object.hash(runtimeType,id,name,description,price,type,usageType,isAvailable,probability);
 
 @override
 String toString() {
-  return 'ShopItemModel(id: $id, name: $name, description: $description, price: $price, type: $type, usageType: $usageType, isAvailable: $isAvailable)';
+  return 'ShopItemModel(id: $id, name: $name, description: $description, price: $price, type: $type, usageType: $usageType, isAvailable: $isAvailable, probability: $probability)';
 }
 
 
@@ -48,7 +49,7 @@ abstract mixin class $ShopItemModelCopyWith<$Res>  {
   factory $ShopItemModelCopyWith(ShopItemModel value, $Res Function(ShopItemModel) _then) = _$ShopItemModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String description, int price, ItemType type, UsageType usageType, bool isAvailable
+ String id, String name, String description, int price, ItemType type, UsageType usageType, bool isAvailable, int probability
 });
 
 
@@ -65,7 +66,7 @@ class _$ShopItemModelCopyWithImpl<$Res>
 
 /// Create a copy of ShopItemModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? description = null,Object? price = null,Object? type = null,Object? usageType = null,Object? isAvailable = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? description = null,Object? price = null,Object? type = null,Object? usageType = null,Object? isAvailable = null,Object? probability = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -74,7 +75,8 @@ as String,price: null == price ? _self.price : price // ignore: cast_nullable_to
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as ItemType,usageType: null == usageType ? _self.usageType : usageType // ignore: cast_nullable_to_non_nullable
 as UsageType,isAvailable: null == isAvailable ? _self.isAvailable : isAvailable // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,probability: null == probability ? _self.probability : probability // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -159,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String description,  int price,  ItemType type,  UsageType usageType,  bool isAvailable)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String description,  int price,  ItemType type,  UsageType usageType,  bool isAvailable,  int probability)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ShopItemModel() when $default != null:
-return $default(_that.id,_that.name,_that.description,_that.price,_that.type,_that.usageType,_that.isAvailable);case _:
+return $default(_that.id,_that.name,_that.description,_that.price,_that.type,_that.usageType,_that.isAvailable,_that.probability);case _:
   return orElse();
 
 }
@@ -180,10 +182,10 @@ return $default(_that.id,_that.name,_that.description,_that.price,_that.type,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String description,  int price,  ItemType type,  UsageType usageType,  bool isAvailable)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String description,  int price,  ItemType type,  UsageType usageType,  bool isAvailable,  int probability)  $default,) {final _that = this;
 switch (_that) {
 case _ShopItemModel():
-return $default(_that.id,_that.name,_that.description,_that.price,_that.type,_that.usageType,_that.isAvailable);case _:
+return $default(_that.id,_that.name,_that.description,_that.price,_that.type,_that.usageType,_that.isAvailable,_that.probability);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +202,10 @@ return $default(_that.id,_that.name,_that.description,_that.price,_that.type,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String description,  int price,  ItemType type,  UsageType usageType,  bool isAvailable)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String description,  int price,  ItemType type,  UsageType usageType,  bool isAvailable,  int probability)?  $default,) {final _that = this;
 switch (_that) {
 case _ShopItemModel() when $default != null:
-return $default(_that.id,_that.name,_that.description,_that.price,_that.type,_that.usageType,_that.isAvailable);case _:
+return $default(_that.id,_that.name,_that.description,_that.price,_that.type,_that.usageType,_that.isAvailable,_that.probability);case _:
   return null;
 
 }
@@ -215,7 +217,7 @@ return $default(_that.id,_that.name,_that.description,_that.price,_that.type,_th
 @JsonSerializable()
 
 class _ShopItemModel implements ShopItemModel {
-  const _ShopItemModel({required this.id, required this.name, required this.description, required this.price, required this.type, this.usageType = UsageType.always, this.isAvailable = true});
+  const _ShopItemModel({required this.id, required this.name, required this.description, required this.price, required this.type, this.usageType = UsageType.always, this.isAvailable = true, this.probability = 0});
   factory _ShopItemModel.fromJson(Map<String, dynamic> json) => _$ShopItemModelFromJson(json);
 
 @override final  String id;
@@ -225,6 +227,8 @@ class _ShopItemModel implements ShopItemModel {
 @override final  ItemType type;
 @override@JsonKey() final  UsageType usageType;
 @override@JsonKey() final  bool isAvailable;
+/// 랜덤박스 당첨 가중치 (전체 합 기준 비율)
+@override@JsonKey() final  int probability;
 
 /// Create a copy of ShopItemModel
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShopItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.price, price) || other.price == price)&&(identical(other.type, type) || other.type == type)&&(identical(other.usageType, usageType) || other.usageType == usageType)&&(identical(other.isAvailable, isAvailable) || other.isAvailable == isAvailable));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShopItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.description, description) || other.description == description)&&(identical(other.price, price) || other.price == price)&&(identical(other.type, type) || other.type == type)&&(identical(other.usageType, usageType) || other.usageType == usageType)&&(identical(other.isAvailable, isAvailable) || other.isAvailable == isAvailable)&&(identical(other.probability, probability) || other.probability == probability));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,description,price,type,usageType,isAvailable);
+int get hashCode => Object.hash(runtimeType,id,name,description,price,type,usageType,isAvailable,probability);
 
 @override
 String toString() {
-  return 'ShopItemModel(id: $id, name: $name, description: $description, price: $price, type: $type, usageType: $usageType, isAvailable: $isAvailable)';
+  return 'ShopItemModel(id: $id, name: $name, description: $description, price: $price, type: $type, usageType: $usageType, isAvailable: $isAvailable, probability: $probability)';
 }
 
 
@@ -259,7 +263,7 @@ abstract mixin class _$ShopItemModelCopyWith<$Res> implements $ShopItemModelCopy
   factory _$ShopItemModelCopyWith(_ShopItemModel value, $Res Function(_ShopItemModel) _then) = __$ShopItemModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String description, int price, ItemType type, UsageType usageType, bool isAvailable
+ String id, String name, String description, int price, ItemType type, UsageType usageType, bool isAvailable, int probability
 });
 
 
@@ -276,7 +280,7 @@ class __$ShopItemModelCopyWithImpl<$Res>
 
 /// Create a copy of ShopItemModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? description = null,Object? price = null,Object? type = null,Object? usageType = null,Object? isAvailable = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? description = null,Object? price = null,Object? type = null,Object? usageType = null,Object? isAvailable = null,Object? probability = null,}) {
   return _then(_ShopItemModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -285,7 +289,8 @@ as String,price: null == price ? _self.price : price // ignore: cast_nullable_to
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as ItemType,usageType: null == usageType ? _self.usageType : usageType // ignore: cast_nullable_to_non_nullable
 as UsageType,isAvailable: null == isAvailable ? _self.isAvailable : isAvailable // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,probability: null == probability ? _self.probability : probability // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

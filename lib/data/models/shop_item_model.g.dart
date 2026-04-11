@@ -17,6 +17,7 @@ _ShopItemModel _$ShopItemModelFromJson(Map<String, dynamic> json) =>
           $enumDecodeNullable(_$UsageTypeEnumMap, json['usageType']) ??
           UsageType.always,
       isAvailable: json['isAvailable'] as bool? ?? true,
+      probability: (json['probability'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$ShopItemModelToJson(_ShopItemModel instance) =>
@@ -28,6 +29,7 @@ Map<String, dynamic> _$ShopItemModelToJson(_ShopItemModel instance) =>
       'type': _$ItemTypeEnumMap[instance.type]!,
       'usageType': _$UsageTypeEnumMap[instance.usageType]!,
       'isAvailable': instance.isAvailable,
+      'probability': instance.probability,
     };
 
 const _$ItemTypeEnumMap = {
