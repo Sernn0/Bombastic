@@ -6,10 +6,16 @@ import '../../../data/repositories/mission_repository.dart';
 
 part 'mission_controller.g.dart';
 
-/// 미션 목록 (실시간)
+/// 미션 목록 (실시간, 유저의 completedMissionIds 반영)
 @riverpod
 Stream<List<MissionModel>> missions(Ref ref) {
-  return ref.watch(missionRepositoryProvider).watchMissions();
+  final currentUser = ref.watch(currentUserProvider).asData?.value;
+  final completedIds = currentUser?.completedMissionIds ?? [];
+  return ref.watch(missionRepositoryProvider).watchMissions().map(
+        (missions) => missions
+            .map((m) => m.copyWith(isCompleted: completedIds.contains(m.id)))
+            .toList(),
+      );
 }
 
 @riverpod
@@ -18,15 +24,9 @@ class MissionController extends _$MissionController {
   AsyncValue<void> build() => const AsyncData(null);
 
   Future<void> checkIn({required String groupId}) async {
-    final uid = ref.read(currentUidProvider);
-    if (uid == null) return;
-
     state = const AsyncLoading();
     final next = await AsyncValue.guard(() async {
-      final rewarded = await ref
-          .read(missionRepositoryProvider)
-          .checkIn(uid: uid, groupId: groupId);
-      if (!rewarded) throw Exception('오늘은 이미 출석했습니다.');
+      await ref.read(missionRepositoryProvider).checkIn(groupId: groupId);
     });
     if (ref.mounted) state = next;
   }

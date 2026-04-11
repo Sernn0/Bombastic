@@ -61,6 +61,9 @@ dev_dependencies:
   # 스플래시 스크린
   flutter_native_splash: ^2.4.3
 
+  # 앱 아이콘
+  flutter_launcher_icons: ^0.14.3
+
 flutter:
   uses-material-design: true
 
@@ -72,3 +75,10 @@ flutter_native_splash:
     color: "#FF3B30"
     color_dark: "#1a0000"
   web: false
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_background: "#FF5722"
+  adaptive_icon_foreground: "assets/icon/icon.png"

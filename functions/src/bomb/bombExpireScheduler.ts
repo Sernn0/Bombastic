@@ -52,12 +52,12 @@ export const checkBombExpiry = functions
   });
 
 /**
- * 1분마다 실행되는 게임 7일 만료 감지 스케줄러.
+ * 60분마다 실행되는 게임 7일 만료 감지 스케줄러.
  * gameExpiresAt이 현재 시각보다 이전이고 status가 'playing'인 그룹을 찾아 종료 처리.
  */
 export const checkGameExpiry = functions
   .runWith({ timeoutSeconds: 60, memory: '256MB' })
-  .pubsub.schedule('every 1 minutes')
+  .pubsub.schedule('every 60 minutes')
   .onRun(async () => {
     const now = admin.firestore.Timestamp.now();
 
@@ -72,18 +72,32 @@ export const checkGameExpiry = functions
       return;
     }
 
-    const batch = db.batch();
+    let processedCount = 0;
 
     for (const doc of snapshot.docs) {
-      functions.logger.info(`게임 7일 만료 처리: ${doc.id}`);
-      batch.update(doc.ref, {
-        status: 'finished',
-        gameEndedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
+      try {
+        const group = doc.data();
+        functions.logger.info(`게임 7일 만료 처리: ${doc.id}`);
+
+        await doc.ref.update({
+          status: 'finished',
+          gameEndedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+
+        await doc.ref.collection('results').doc('summary').set({
+          finalizedAt: admin.firestore.FieldValue.serverTimestamp(),
+          memberUids: group.memberUids,
+          penaltyCount: group.penaltyCount,
+          reason: 'expired',
+        });
+
+        processedCount++;
+      } catch (err) {
+        functions.logger.error(`게임 만료 처리 실패: ${doc.id}`, err);
+      }
     }
 
-    await batch.commit();
-    functions.logger.info(`${snapshot.size}개 게임 만료 처리 완료`);
+    functions.logger.info(`${processedCount}/${snapshot.size}개 게임 만료 처리 완료`);
   });
 
 /**
@@ -104,9 +118,22 @@ export const onBombExploded = functions.firestore
 
     // 폭발 즉시 게임 종료
     const groupRef = db.collection('groups').doc(groupId);
+    const groupSnap = await groupRef.get();
+    const group = groupSnap.data();
+
     await groupRef.update({
       status: 'finished',
       gameEndedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
+
+    if (group) {
+      await groupRef.collection('results').doc('summary').set({
+        finalizedAt: admin.firestore.FieldValue.serverTimestamp(),
+        memberUids: group.memberUids,
+        penaltyCount: group.penaltyCount,
+        reason: 'exploded',
+      });
+    }
+
     functions.logger.info(`그룹 ${groupId} 게임 종료`);
   });

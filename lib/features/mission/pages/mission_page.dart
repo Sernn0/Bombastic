@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../data/firebase/firebase_providers.dart';
 import '../controllers/mission_controller.dart';
 
 /// 탭에서 직접 사용하는 미션 body 위젯
@@ -14,6 +15,13 @@ class MissionBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final missionsAsync = ref.watch(missionsProvider);
     final checkInState = ref.watch(missionControllerProvider);
+    final currentUser = ref.watch(currentUserProvider).asData?.value;
+    final now = DateTime.now();
+    final lastCheckIn = currentUser?.lastCheckInDate;
+    final alreadyCheckedIn = lastCheckIn != null &&
+        lastCheckIn.year == now.year &&
+        lastCheckIn.month == now.month &&
+        lastCheckIn.day == now.day;
 
     return Column(
       children: [
@@ -33,7 +41,7 @@ class MissionBody extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 ElevatedButton.icon(
-                  onPressed: checkInState.isLoading
+                  onPressed: alreadyCheckedIn || checkInState.isLoading
                       ? null
                       : () async {
                           await ref
@@ -52,9 +60,12 @@ class MissionBody extends ConsumerWidget {
                             ),
                           );
                         },
-                  icon: const Icon(Icons.check_circle),
-                  label: const Text(
-                      '출석하기 (+${CurrencyConstants.dailyCheckInReward}💰)'),
+                  icon: Icon(alreadyCheckedIn
+                      ? Icons.check_circle
+                      : Icons.check_circle_outline),
+                  label: Text(alreadyCheckedIn
+                      ? '오늘 출석 완료 \u2713'
+                      : '출석하기 (+${CurrencyConstants.dailyCheckInReward}💰)'),
                 ),
               ],
             ),

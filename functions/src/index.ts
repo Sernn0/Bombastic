@@ -9,3 +9,4 @@ export * from './group/groupTriggers';
 export * from './notification/fcmSender';
 export * from './items/itemController';
 export * from './items/lootBoxController';
+export * from './mission/missionController';

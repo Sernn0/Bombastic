@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../core/constants/app_constants.dart';
-import '../../core/utils/date_utils.dart';
 import '../firebase/firebase_providers.dart';
 import '../models/mission_model.dart';
 
@@ -68,25 +67,12 @@ class MissionRepository {
     ),
   ];
 
-  /// 출석 체크 — 그룹별 재화 지급
-  Future<bool> checkIn({required String uid, required String groupId}) async {
-    final todayKey = AppDateUtils.todayKey();
-    final userRef = _firestore
-        .collection(AppConstants.usersCollection)
-        .doc(uid);
-
-    return _firestore.runTransaction((tx) async {
-      final snap = await tx.get(userRef);
-      final lastCheckIn = snap.data()?['lastCheckInDate'] as String?;
-
-      if (lastCheckIn == todayKey) return false; // 이미 출석
-
-      tx.update(userRef, {
-        'lastCheckInDate': todayKey,
-        'groupCurrencies.$groupId':
-            FieldValue.increment(CurrencyConstants.dailyCheckInReward),
-      });
-      return true;
-    });
+  /// 출석 체크 — 서버 사이드 Cloud Function 호출
+  Future<bool> checkIn({required String groupId}) async {
+    await callHttpsCallableWithRegionFallback(
+      functionName: 'checkIn',
+      data: {'groupId': groupId},
+    );
+    return true;
   }
 }

@@ -14,6 +14,7 @@ abstract class UserModel with _$UserModel {
     @Default({}) Map<String, int> groupCurrencies,
     /// 그룹별 보유 아이템 (groupId → itemIds)
     @Default({}) Map<String, List<String>> groupOwnedItemIds,
+    @Default([]) List<String> completedMissionIds,
     @Default([]) List<String> groupIds,
     @Default({}) Map<String, String> groupNicknames,
     String? currentGroupId,
