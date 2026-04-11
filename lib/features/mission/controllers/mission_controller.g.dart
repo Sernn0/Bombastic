@@ -8,12 +8,12 @@ part of 'mission_controller.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// 미션 목록 (실시간)
+/// 미션 목록 (실시간, 유저의 completedMissionIds 반영)
 
 @ProviderFor(missions)
 final missionsProvider = MissionsProvider._();
 
-/// 미션 목록 (실시간)
+/// 미션 목록 (실시간, 유저의 completedMissionIds 반영)
 
 final class MissionsProvider
     extends
@@ -25,7 +25,7 @@ final class MissionsProvider
     with
         $FutureModifier<List<MissionModel>>,
         $StreamProvider<List<MissionModel>> {
-  /// 미션 목록 (실시간)
+  /// 미션 목록 (실시간, 유저의 completedMissionIds 반영)
   MissionsProvider._()
     : super(
         from: null,
@@ -52,7 +52,7 @@ final class MissionsProvider
   }
 }
 
-String _$missionsHash() => r'1d5db8de4cd9d0ecb0b2924ab67346cffab701f5';
+String _$missionsHash() => r'b4dbdbfdf6c7f32936f869995b377a4d4dab9bf2';
 
 @ProviderFor(MissionController)
 final missionControllerProvider = MissionControllerProvider._();
@@ -86,7 +86,7 @@ final class MissionControllerProvider
   }
 }
 
-String _$missionControllerHash() => r'dccbb2fd5b00d4e4e24ca9208fc12d04981421eb';
+String _$missionControllerHash() => r'6618c7e8c8f72166a62dad31bb97bd0441be231a';
 
 abstract class _$MissionController extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();

@@ -20,6 +20,11 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
             MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
       ) ??
       const {},
+  completedMissionIds:
+      (json['completedMissionIds'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
   groupIds:
       (json['groupIds'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
@@ -43,6 +48,7 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'displayName': instance.displayName,
       'groupCurrencies': instance.groupCurrencies,
       'groupOwnedItemIds': instance.groupOwnedItemIds,
+      'completedMissionIds': instance.completedMissionIds,
       'groupIds': instance.groupIds,
       'groupNicknames': instance.groupNicknames,
       'currentGroupId': instance.currentGroupId,

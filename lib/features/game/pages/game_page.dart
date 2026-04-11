@@ -53,23 +53,19 @@ List<Widget> _buildGlobalActions(WidgetRef ref, String groupId) {
   return [
     Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.orange, width: 1.5),
-          borderRadius: BorderRadius.circular(20),
+      child: Badge(
+        label: Text(
+          '$currency',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+            color: Colors.white,
+          ),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.monetization_on, size: 16, color: Colors.orange),
-            const SizedBox(width: 4),
-            Text(
-              '$currency',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-            ),
-          ],
-        ),
+        backgroundColor: Colors.orange,
+        alignment: Alignment.topRight,
+        offset: const Offset(4, -4),
+        child: const Icon(Icons.monetization_on, size: 28, color: Colors.orange),
       ),
     ),
   ];

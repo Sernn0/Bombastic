@@ -41,7 +41,7 @@ final class AdminControllerProvider
   }
 }
 
-String _$adminControllerHash() => r'9556721db66d07751ad1b5c6418f66829b0667eb';
+String _$adminControllerHash() => r'3dbb552158103aa2495be88a856d9a3abffdcd81';
 
 abstract class _$AdminController extends $Notifier<AsyncValue<void>> {
   AsyncValue<void> build();
