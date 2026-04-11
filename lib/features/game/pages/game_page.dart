@@ -220,9 +220,6 @@ class _GameBody extends ConsumerWidget {
 
     final memberUids = group?.memberUids ?? const <String>[];
 
-    // 내가 보유한 폭탄 목록
-    final myBombs = bombs.where((b) => b.holderUid == uid).toList();
-
     // 보유 아이템 중 사용 가능한 것 필터링
     final usableItems = shopItems
         .where((item) => ownedItemIds.contains(item.id))
