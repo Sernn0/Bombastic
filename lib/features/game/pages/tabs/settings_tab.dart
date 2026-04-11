@@ -65,8 +65,9 @@ class SettingsTab extends ConsumerWidget {
             leading: const Icon(Icons.developer_mode),
             title: const Text('Admin CLI (명령어 입력기)'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => showDialog(
+            onTap: () => showDialog<void>(
               context: context,
+              barrierDismissible: false,
               builder: (ctx) => AdminCliDialog(groupId: groupId),
             ),
           ),

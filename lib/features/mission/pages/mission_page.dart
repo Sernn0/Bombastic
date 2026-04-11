@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_constants.dart';
-import '../../../data/firebase/firebase_providers.dart';
 import '../controllers/mission_controller.dart';
 
 /// 탭에서 직접 사용하는 미션 body 위젯
@@ -15,26 +14,9 @@ class MissionBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final missionsAsync = ref.watch(missionsProvider);
     final checkInState = ref.watch(missionControllerProvider);
-    final user = ref.watch(currentUserProvider).asData?.value;
-    final currency = user?.groupCurrencies[groupId] ?? 0;
 
     return Column(
       children: [
-        // 재화 잔액
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-          child: Row(
-            children: [
-              const Icon(Icons.monetization_on, size: 18, color: Colors.orange),
-              const SizedBox(width: 4),
-              Text(
-                '보유 재화: $currency',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ),
-
         // 출석 체크 섹션
         Card(
           margin: const EdgeInsets.all(16),

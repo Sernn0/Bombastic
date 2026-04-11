@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/router/app_router.dart';
 import '../../../data/firebase/firebase_providers.dart';
 import '../../../data/models/group_model.dart';
-import '../../admin/widgets/admin_cli_dialog.dart';
 import '../../group/controllers/group_controller.dart';
 import '../../mission/pages/mission_page.dart';
 import '../../shop/pages/shop_page.dart';
@@ -52,12 +51,24 @@ class GamePage extends ConsumerWidget {
 List<Widget> _buildGlobalActions(WidgetRef ref, String groupId) {
   final currency = ref.watch(currentUserProvider).asData?.value?.groupCurrencies[groupId] ?? 0;
   return [
-    Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Text(
-          '$currency 🪙',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.orange, width: 1.5),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.monetization_on, size: 16, color: Colors.orange),
+            const SizedBox(width: 4),
+            Text(
+              '$currency',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            ),
+          ],
         ),
       ),
     ),
@@ -219,17 +230,7 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView> {
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.go(AppRoutes.home)),
         title: Text('💣 $groupName'),
-        actions: [
-          ..._buildGlobalActions(ref, widget.groupId),
-          IconButton(
-            icon: const Icon(Icons.developer_mode),
-            onPressed: () => showDialog<void>(
-              context: context,
-              barrierDismissible: false,
-              builder: (ctx) => AdminCliDialog(groupId: widget.groupId),
-            ),
-          ),
-        ],
+        actions: _buildGlobalActions(ref, widget.groupId),
       ),
       body: IndexedStack(
         index: _tabIndex,

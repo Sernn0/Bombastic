@@ -30,8 +30,14 @@ class AdminController extends _$AdminController {
       switch (cmd) {
         case '/money':
           final amount = parts.length > 1 ? int.tryParse(parts[1]) ?? 10000 : 10000;
-          await firestore.collection('users').doc(uid).update({
-            'groupCurrencies.$groupId': FieldValue.increment(amount),
+          final userRef = firestore.collection('users').doc(uid);
+          await firestore.runTransaction((tx) async {
+            final snap = await tx.get(userRef);
+            final currencies = Map<String, dynamic>.from(
+              snap.data()?['groupCurrencies'] as Map<String, dynamic>? ?? {},
+            );
+            final current = (currencies[groupId] as num?)?.toInt() ?? 0;
+            tx.update(userRef, {'groupCurrencies.$groupId': current + amount});
           });
           break;
           
