@@ -47,6 +47,7 @@ class GroupRepository {
   Future<GroupModel?> findByJoinCode(String joinCode) async {
     final query = await _groups
         .where('joinCode', isEqualTo: joinCode)
+        .where('status', isEqualTo: GroupStatus.waiting.name)
         .limit(1)
         .get();
 
