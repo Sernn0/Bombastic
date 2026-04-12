@@ -1,12 +1,14 @@
 # 💣 Bombastic
 
+[![Website](https://img.shields.io/badge/Web_Landing_Page-bombastic--web.vercel.app-red?style=for-the-badge&logo=vercel)](https://bombastic-web.vercel.app/)
+
 > 2~10명이 함께 즐기는 실시간 장기전 소셜 게임 — 폭탄을 돌려라, 마지막에 들고 있는 사람이 진다.
 
 ---
 
 ## 게임 소개
 
-**Bombastic**은 친구들과 함께 폭탄을 넘기며 벌칙을 피하는 소셜 게임입니다.  
+**Bombastic**은 친구들과 함께 폭탄을 넘기며 벌칙을 피하는 소셜 게임입니다.
 그룹을 만들고 초대 링크를 공유해 친구들을 모은 뒤, 방장이 게임을 시작합니다.  
 폭탄은 매 **24시간**마다 터지며, 터지는 순간 들고 있던 사람이 폭발 카운트를 받습니다.  
 게임 기간(4~7일)이 끝났을 때 폭발 횟수가 가장 많은 사람이 **패배자**가 되어 내기를 이행해야 합니다.
@@ -105,6 +107,12 @@
 | 백엔드 | Firebase (Auth · Firestore · Cloud Functions · FCM) |
 | 서버 로직 | Cloud Functions (TypeScript, Node 20) |
 | 데이터 모델 | freezed + json_serializable |
+
+---
+
+## 🔗 관련 링크
+- **공식 랜딩 페이지** : [페이지](https://bombastic-web.vercel.app/)
+- **상세 기획 문서 (Notion)** : [노션](https://holycow-likelion.notion.site/bombastic?source=copy_link)
 
 ---
 
