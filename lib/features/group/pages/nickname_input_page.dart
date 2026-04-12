@@ -60,44 +60,52 @@ class _NicknameInputPageState extends ConsumerState<NicknameInputPage> {
 
   @override
   Widget build(BuildContext context) {
+    final viewInsets = MediaQuery.of(context).viewInsets;
+
     return Scaffold(
       appBar: AppBar(title: const Text('닉네임 설정')),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                '이 그룹에서 사용할 닉네임을 입력하세요',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(24, 24, 24, 24 + viewInsets.bottom),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    '이 그룹에서 사용할 닉네임을 입력하세요',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    '닉네임은 그룹별로 다르게 설정할 수 있습니다.',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 24),
+                  TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      labelText: '닉네임',
+                      hintText: '예) 폭탄마스터',
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLength: 10,
+                    autofocus: true,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => _submit(),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _isLoading ? null : _submit,
+                    child: _isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text('완료'),
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              const Text(
-                '닉네임은 그룹별로 다르게 설정할 수 있습니다.',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-              const SizedBox(height: 24),
-              TextField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  labelText: '닉네임',
-                  hintText: '예) 폭탄마스터',
-                  border: OutlineInputBorder(),
-                ),
-                maxLength: 10,
-                autofocus: true,
-                textInputAction: TextInputAction.done,
-                onSubmitted: (_) => _submit(),
-              ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _submit,
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('완료'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
