@@ -116,6 +116,31 @@ class GroupController extends _$GroupController {
     return state.hasError ? null : groupId;
   }
 
+  /// 그룹 나가기 — 마지막 멤버가 나가면 그룹 데이터 말소
+  Future<void> leaveGroup({required String groupId}) async {
+    state = const AsyncLoading();
+    final uid = ref.read(currentUidProvider);
+    if (uid == null) {
+      state = AsyncError('로그인이 필요합니다.', StackTrace.current);
+      return;
+    }
+
+    final result = await AsyncValue.guard(() async {
+      await ref
+          .read(groupRepositoryProvider)
+          .leaveGroup(groupId: groupId, uid: uid);
+      await ref
+          .read(userRepositoryProvider)
+          .removeGroupMembership(uid: uid, groupId: groupId);
+    });
+
+    state = result.when(
+      data: (_) => const AsyncData(null),
+      error: AsyncError.new,
+      loading: AsyncLoading.new,
+    );
+  }
+
   String _generateJoinCode() {
     const uuid = Uuid();
     return uuid.v4().replaceAll('-', '').substring(0, AppConstants.joinCodeLength).toUpperCase();

@@ -5,6 +5,7 @@ import 'package:bomb_pass/features/game/controllers/game_controller.dart';
 import 'package:bomb_pass/features/game/pages/tabs/home_tab.dart';
 import 'package:bomb_pass/features/game/pages/tabs/log_tab.dart';
 import 'package:bomb_pass/features/game/pages/tabs/settings_tab.dart';
+import 'package:bomb_pass/features/game/widgets/ending_credits_overlay.dart';
 import 'package:bomb_pass/features/group/controllers/group_controller.dart';
 import 'package:bomb_pass/features/mission/pages/mission_page.dart';
 import 'package:bomb_pass/features/shop/pages/shop_page.dart';
@@ -12,6 +13,7 @@ import 'package:bomb_pass/widgets/group_currency_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 
 class GamePage extends ConsumerWidget {
   const GamePage({required this.groupId, super.key});
@@ -272,40 +274,119 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView> {
 
 // ── Finished 상태 UI ─────────────────────────────────────────
 
-class _FinishedView extends ConsumerWidget {
+class _FinishedView extends ConsumerStatefulWidget {
   const _FinishedView({required this.group});
 
   final GroupModel group;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_FinishedView> createState() => _FinishedViewState();
+}
+
+class _FinishedViewState extends ConsumerState<_FinishedView> {
+  bool _creditsShown = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_creditsShown) {
+      return EndingCreditsOverlay(
+        group: widget.group,
+        onDismissed: () => setState(() => _creditsShown = true),
+      );
+    }
+
+    return _FinishedTabView(group: widget.group);
+  }
+}
+
+// ── Finished 탭 뷰 (크레딧 이후) ────────────────────────────────
+
+class _FinishedTabView extends ConsumerStatefulWidget {
+  const _FinishedTabView({required this.group});
+
+  final GroupModel group;
+
+  @override
+  ConsumerState<_FinishedTabView> createState() => _FinishedTabViewState();
+}
+
+class _FinishedTabViewState extends ConsumerState<_FinishedTabView> {
+  int _tabIndex = 2; // 홈 탭 기본
+
+  static const _tabs = [
+    NavigationDestination(icon: Icon(Icons.store), label: '상점'),
+    NavigationDestination(icon: Icon(Icons.assignment), label: '미션'),
+    NavigationDestination(icon: Icon(Icons.home), label: '홈'),
+    NavigationDestination(icon: Icon(Icons.history), label: '로그'),
+    NavigationDestination(icon: Icon(Icons.settings), label: '설정'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.go(AppRoutes.home)),
-        title: Text(group.name),
-        actions: _buildGlobalActions(group.id),
+        title: Text('🏆 ${widget.group.name}'),
+        actions: _buildGlobalActions(widget.group.id),
       ),
-      body: Center(
+      body: IndexedStack(
+        index: _tabIndex,
+        children: [
+          ShopBody(groupId: widget.group.id),
+          MissionBody(groupId: widget.group.id),
+          _FinishedHomeTab(group: widget.group),
+          LogTab(groupId: widget.group.id),
+          SettingsTab(groupId: widget.group.id),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _tabIndex,
+        onDestinationSelected: (i) => setState(() => _tabIndex = i),
+        destinations: _tabs,
+      ),
+    );
+  }
+}
+
+// ── Finished 홈 탭 ───────────────────────────────────────────
+
+class _FinishedHomeTab extends StatelessWidget {
+  const _FinishedHomeTab({required this.group});
+
+  final GroupModel group;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('🏆', style: TextStyle(fontSize: 64)),
+            const Text('🏆', style: TextStyle(fontSize: 72)),
             const SizedBox(height: 16),
             const Text(
               '게임이 종료되었습니다!',
-              style: TextStyle(
-                  fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () =>
-                  context.push('${AppRoutes.result}/${group.id}'),
-              child: const Text('결과 보기'),
+            const SizedBox(height: 8),
+            Text(
+              group.name,
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
-            const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: () => context.go(AppRoutes.home),
-              child: const Text('홈으로 돌아가기'),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () =>
+                    context.push('${AppRoutes.result}/${group.id}'),
+                icon: const Icon(Icons.emoji_events),
+                label: const Text('결과 보기'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+              ),
             ),
           ],
         ),

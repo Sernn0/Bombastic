@@ -127,4 +127,30 @@ class GroupRepository {
       return GroupModel.fromJson(snap.data()!);
     });
   }
+
+  /// 그룹 나가기 — 마지막 멤버가 나가면 그룹 문서 삭제
+  Future<void> leaveGroup({
+    required String groupId,
+    required String uid,
+  }) async {
+    final groupRef = _groups.doc(groupId);
+    await _firestore.runTransaction((tx) async {
+      final snap = await tx.get(groupRef);
+      if (!snap.exists || snap.data() == null) return;
+
+      final data = snap.data()!;
+      final memberUids =
+          List<String>.from(data['memberUids'] as List<dynamic>? ?? const []);
+      memberUids.remove(uid);
+
+      if (memberUids.isEmpty) {
+        tx.delete(groupRef);
+      } else {
+        tx.update(groupRef, {
+          'memberUids': memberUids,
+          'memberNicknames.$uid': FieldValue.delete(),
+        });
+      }
+    });
+  }
 }

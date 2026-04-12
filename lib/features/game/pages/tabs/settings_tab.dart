@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/theme_provider.dart';
+import '../../../../data/models/group_model.dart';
 import '../../../admin/widgets/admin_cli_dialog.dart';
+import '../../../group/controllers/group_controller.dart';
 
 class SettingsTab extends ConsumerWidget {
   const SettingsTab({super.key, required this.groupId});
@@ -12,6 +16,8 @@ class SettingsTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
+    final group = ref.watch(watchGroupProvider(groupId)).asData?.value;
+    final isFinished = group?.status == GroupStatus.finished;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -72,7 +78,62 @@ class SettingsTab extends ConsumerWidget {
             ),
           ),
         ),
+
+        // 게임 종료 후 나가기
+        if (isFinished) ...[
+          const SizedBox(height: 24),
+          const Text(
+            '그룹',
+            style: TextStyle(
+                fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.exit_to_app, color: Colors.red),
+              title: const Text(
+                '그룹 나가기',
+                style: TextStyle(color: Colors.red),
+              ),
+              subtitle: const Text('그룹을 나가면 목록에서 사라집니다.'),
+              onTap: () => _confirmLeave(context, ref),
+            ),
+          ),
+        ],
       ],
     );
+  }
+
+  Future<void> _confirmLeave(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('그룹 나가기'),
+        content: const Text(
+          '정말 이 그룹을 나가시겠어요?\n모든 멤버가 나가면 그룹 데이터가 삭제됩니다.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('취소'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('나가기'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !context.mounted) return;
+
+    await ref
+        .read(groupControllerProvider.notifier)
+        .leaveGroup(groupId: groupId);
+
+    if (context.mounted) {
+      context.go(AppRoutes.home);
+    }
   }
 }
