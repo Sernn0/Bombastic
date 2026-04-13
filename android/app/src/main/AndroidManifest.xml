@@ -37,6 +37,14 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="bombastic" android:host="join" />
             </intent-filter>
+
+            <!-- 카카오링크 실행 파라미터 수신 -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="kakao35b52fa389bef4ffce0448f75705bee1" android:host="kakaolink" />
+            </intent-filter>
         </activity>
 
         <!-- FCM 서비스 -->
@@ -63,5 +71,6 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <package android:name="com.kakao.talk"/>
     </queries>
 </manifest>

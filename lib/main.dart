@@ -6,6 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
 
 import 'core/router/app_router.dart';
 import 'core/services/fcm_service.dart';
@@ -25,6 +26,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  KakaoSdk.init(nativeAppKey: '35b52fa389bef4ffce0448f75705bee1');
 
   // onBackgroundMessage는 runApp 이전에 등록해야 함 (FCM 요구사항)
   FirebaseMessaging.onBackgroundMessage(_onBackgroundMessage);
@@ -71,13 +74,21 @@ class _BombasticAppState extends ConsumerState<BombasticApp> {
   }
 
   void _handleDeepLink(Uri uri) {
-    // bombastic://join?code=XXXXXX
+    String? code;
+
+    // bombastic://join?code=XXXXXX (기존 커스텀 스킴)
     if (uri.scheme == 'bombastic' && uri.host == 'join') {
-      final code = uri.queryParameters['code'];
-      if (code != null && code.isNotEmpty) {
-        final router = ref.read(appRouterProvider);
-        router.push('${AppRoutes.groupJoin}?code=$code');
-      }
+      code = uri.queryParameters['code'];
+    }
+    // kakao[appKey]://kakaolink?code=XXXXXX (카카오링크 실행 파라미터)
+    else if (uri.scheme == 'kakao35b52fa389bef4ffce0448f75705bee1' &&
+        uri.host == 'kakaolink') {
+      code = uri.queryParameters['code'];
+    }
+
+    if (code != null && code.isNotEmpty) {
+      final router = ref.read(appRouterProvider);
+      router.push('${AppRoutes.groupJoin}?code=$code');
     }
   }
 

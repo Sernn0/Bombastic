@@ -60,6 +60,12 @@
 @import flutter_native_splash;
 #endif
 
+#if __has_include(<kakao_flutter_sdk_common/KakaoFlutterSdkCommonPlugin.h>)
+#import <kakao_flutter_sdk_common/KakaoFlutterSdkCommonPlugin.h>
+#else
+@import kakao_flutter_sdk_common;
+#endif
+
 #if __has_include(<share_plus/FPPSharePlusPlugin.h>)
 #import <share_plus/FPPSharePlusPlugin.h>
 #else
@@ -96,6 +102,7 @@
   [FLTFirebaseMessagingPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTFirebaseMessagingPlugin"]];
   [FlutterLocalNotificationsPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterLocalNotificationsPlugin"]];
   [FlutterNativeSplashPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterNativeSplashPlugin"]];
+  [KakaoFlutterSdkCommonPlugin registerWithRegistrar:[registry registrarForPlugin:@"KakaoFlutterSdkCommonPlugin"]];
   [FPPSharePlusPlugin registerWithRegistrar:[registry registrarForPlugin:@"FPPSharePlusPlugin"]];
   [SharedPreferencesPlugin registerWithRegistrar:[registry registrarForPlugin:@"SharedPreferencesPlugin"]];
   [SqflitePlugin registerWithRegistrar:[registry registrarForPlugin:@"SqflitePlugin"]];

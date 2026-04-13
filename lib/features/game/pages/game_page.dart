@@ -1,21 +1,23 @@
+import 'dart:async';
+
 import 'package:bomb_pass/core/router/app_router.dart';
 import 'package:bomb_pass/data/firebase/firebase_providers.dart';
-import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:bomb_pass/data/models/group_model.dart';
+import 'package:bomb_pass/features/game/controllers/credits_controller.dart';
 import 'package:bomb_pass/features/game/controllers/game_controller.dart';
 import 'package:bomb_pass/features/game/pages/tabs/home_tab.dart';
 import 'package:bomb_pass/features/game/pages/tabs/log_tab.dart';
 import 'package:bomb_pass/features/game/pages/tabs/settings_tab.dart';
-import 'package:bomb_pass/features/game/controllers/credits_controller.dart';
 import 'package:bomb_pass/features/game/widgets/ending_credits_overlay.dart';
 import 'package:bomb_pass/features/group/controllers/group_controller.dart';
 import 'package:bomb_pass/features/mission/pages/mission_page.dart';
 import 'package:bomb_pass/features/shop/pages/shop_page.dart';
 import 'package:bomb_pass/widgets/group_currency_badge.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
 
 
 class GamePage extends ConsumerWidget {
@@ -31,9 +33,15 @@ class GamePage extends ConsumerWidget {
       loading: () => const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       ),
-      error: (e, _) => Scaffold(
-        body: Center(child: Text('오류: $e')),
-      ),
+      error: (e, _) {
+        // 그룹 삭제/강퇴로 인한 권한 오류 → 홈으로 이동
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) context.go(AppRoutes.home);
+        });
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      },
       data: (group) {
         if (group == null) {
           // 그룹 삭제(마지막 멤버 탈퇴 등) 시 자동으로 홈으로 이동
@@ -65,6 +73,45 @@ String _itemUsageMessage(String nickname, String itemType) {
   };
 }
 
+// ── 카카오링크 공유 ───────────────────────────────────────────
+
+Future<void> _shareViaKakao(
+  BuildContext context, {
+  required String groupName,
+  required String joinCode,
+}) async {
+  final template = TextTemplate(
+    text: '$groupName에서 Bombastic 폭탄 돌리기 게임을 시작했어요! 💣\n아래 버튼으로 바로 입장하세요!',
+    link: Link(
+      androidExecutionParams: {'code': joinCode},
+      iosExecutionParams: {'code': joinCode},
+    ),
+    buttonTitle: '앱에서 참여하기',
+  );
+
+  try {
+    if (await isKakaoTalkInstalled()) {
+      final uri = await ShareClient.instance.shareDefault(template: template);
+      await ShareClient.instance.launchKakaoTalk(uri);
+    } else {
+      final uri = await WebSharerClient.instance.makeDefaultUrl(
+        template: template,
+      );
+      await launchBrowserTab(uri, popupOpen: true);
+    }
+  } catch (e) {
+    debugPrint('KakaoLink 공유 실패: $e');
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('카카오 공유 오류: $e'),
+          duration: const Duration(seconds: 6),
+        ),
+      );
+    }
+  }
+}
+
 // ── Waiting 상태 UI ──────────────────────────────────────────
 
 List<Widget> _buildGlobalActions(String groupId) {
@@ -93,7 +140,6 @@ class _WaitingView extends ConsumerWidget {
       appBar: AppBar(
         leading: BackButton(onPressed: () => context.go(AppRoutes.home)),
         title: Text(group.name),
-        actions: _buildGlobalActions(group.id),
       ),
       body: SafeArea(
         child: Padding(
@@ -101,51 +147,66 @@ class _WaitingView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 참여 코드 — 탭하면 클립보드 복사
-              InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () {
-                  Clipboard.setData(ClipboardData(text: group.joinCode));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('참여 코드가 복사되었습니다 📋'),
-                      duration: Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                },
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('참여 코드',
-                                style: TextStyle(color: Colors.grey)),
-                            const SizedBox(width: 6),
-                            Icon(Icons.copy,
-                                size: 14,
-                                color: Colors.grey.withValues(alpha: 0.7)),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          group.joinCode,
-                          style: const TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 4,
+              // 참여 코드 — 탭하면 클립보드 복사 / 공유 아이콘으로 초대 링크 공유
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            Clipboard.setData(
+                                ClipboardData(text: group.joinCode));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('참여 코드가 복사되었습니다 📋'),
+                                duration: Duration(seconds: 2),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text('참여 코드',
+                                      style: TextStyle(color: Colors.grey)),
+                                  const SizedBox(width: 6),
+                                  Icon(Icons.copy,
+                                      size: 14,
+                                      color:
+                                          Colors.grey.withValues(alpha: 0.7)),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                group.joinCode,
+                                style: const TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 4,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.share),
+                        tooltip: '카카오톡으로 초대',
+                        onPressed: () => _shareViaKakao(
+                          context,
+                          groupName: group.name,
+                          joinCode: group.joinCode,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
-              _InviteLinkTile(joinCode: group.joinCode),
               const SizedBox(height: 16),
               Text(
                 '참여자 (${group.memberUids.length}/${group.maxMembers})',
@@ -228,7 +289,8 @@ class _WaitingView extends ConsumerWidget {
                     ),
                   ),
                 ElevatedButton(
-                  onPressed: group.memberUids.length >= 2
+                  onPressed: group.memberUids.length >= 2 &&
+                          (group.memberNicknames[uid]?.isNotEmpty ?? false)
                       ? () async {
                           try {
                             await ref
@@ -281,19 +343,9 @@ class _WaitingView extends ConsumerWidget {
     );
     if (confirmed != true || !context.mounted) return;
 
-    await ref
-        .read(groupControllerProvider.notifier)
-        .leaveGroup(groupId: group.id);
-
-    if (!context.mounted) return;
-    final state = ref.read(groupControllerProvider);
-    if (state.hasError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('나가기 실패: ${state.error}')),
-      );
-    } else {
-      context.go(AppRoutes.home);
-    }
+    // 홈으로 먼저 이동하여 watchGroup 스트림을 해제한 뒤 탈퇴
+    context.go(AppRoutes.home);
+    unawaited(ref.read(groupControllerProvider.notifier).leaveGroup(groupId: group.id));
   }
 
   Future<void> _confirmKick(
@@ -356,76 +408,10 @@ class _WaitingView extends ConsumerWidget {
     );
     if (confirmed != true || !context.mounted) return;
 
-    await ref
-        .read(groupControllerProvider.notifier)
-        .leaveGroup(groupId: group.id);
-
-    if (!context.mounted) return;
-    final state = ref.read(groupControllerProvider);
-    if (state.hasError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('방 폐쇄 실패: ${state.error}')),
-      );
-    } else {
-      context.go(AppRoutes.home);
-    }
-  }
-}
-
-// ── 초대 링크 하이퍼링크 타일 ────────────────────────────────────
-
-class _InviteLinkTile extends StatelessWidget {
-  const _InviteLinkTile({required this.joinCode});
-
-  final String joinCode;
-
-  String get _link => 'bombastic://join?code=$joinCode';
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          children: [
-            const Icon(Icons.link, size: 18, color: Colors.blueAccent),
-            const SizedBox(width: 8),
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  Clipboard.setData(ClipboardData(text: _link));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('초대 링크가 복사되었습니다 🔗'),
-                      duration: Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                },
-                child: Text(
-                  _link,
-                  style: const TextStyle(
-                    color: Colors.blueAccent,
-                    decoration: TextDecoration.underline,
-                    decorationColor: Colors.blueAccent,
-                    fontSize: 13,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            IconButton(
-              icon: const Icon(Icons.share, size: 20),
-              tooltip: '공유',
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              onPressed: () => Share.share(_link),
-            ),
-          ],
-        ),
-      ),
-    );
+    // 홈으로 먼저 이동하여 watchGroup 스트림을 해제한 뒤 삭제
+    // (그룹 삭제 후 스트림이 권한 오류를 받는 깜빡임 방지)
+    context.go(AppRoutes.home);
+    unawaited(ref.read(groupControllerProvider.notifier).leaveGroup(groupId: group.id));
   }
 }
 
@@ -463,7 +449,9 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView> {
         if (usage == null) return;
         // 같은 이벤트 중복 방지
         if (_lastShownUsage != null &&
-            _lastShownUsage!['usedAt'] == usage['usedAt']) return;
+            _lastShownUsage!['usedAt'] == usage['usedAt']) {
+          return;
+        }
         _lastShownUsage = usage;
 
         final uid = ref.read(currentUidProvider);

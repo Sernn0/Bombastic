@@ -80,6 +80,24 @@
 					<string>bombastic</string>
 				</array>
 			</dict>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLName</key>
+				<string>kakao</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>kakao35b52fa389bef4ffce0448f75705bee1</string>
+				</array>
+			</dict>
+		</array>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>kakaokompassauth</string>
+			<string>storykompassauth</string>
+			<string>kakaolink</string>
+			<string>kakaotalk</string>
+			<string>kakaostory</string>
 		</array>
 	</dict>
 </plist>
