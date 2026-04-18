@@ -155,7 +155,11 @@ class _WaitingViewState extends ConsumerState<_WaitingView> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(onPressed: () => context.go(AppRoutes.home)),
+        leading: BackButton(onPressed: () {
+          ref.read(audioServiceProvider).playBgm('GameMainThemeSong1.mp3');
+          ref.read(audioServiceProvider).stopTicking();
+          context.go(AppRoutes.home);
+        }),
         title: Text(group.name),
       ),
       body: SafeArea(
@@ -364,6 +368,8 @@ class _WaitingViewState extends ConsumerState<_WaitingView> {
     if (confirmed != true || !context.mounted) return;
 
     // 홈으로 먼저 이동하여 watchGroup 스트림을 해제한 뒤 탈퇴
+    ref.read(audioServiceProvider).playBgm('GameMainThemeSong1.mp3');
+    ref.read(audioServiceProvider).stopTicking();
     context.go(AppRoutes.home);
     unawaited(ref.read(groupControllerProvider.notifier).leaveGroup(groupId: widget.group.id));
   }
@@ -430,6 +436,8 @@ class _WaitingViewState extends ConsumerState<_WaitingView> {
 
     // 홈으로 먼저 이동하여 watchGroup 스트림을 해제한 뒤 삭제
     // (그룹 삭제 후 스트림이 권한 오류를 받는 깜빡임 방지)
+    ref.read(audioServiceProvider).playBgm('GameMainThemeSong1.mp3');
+    ref.read(audioServiceProvider).stopTicking();
     context.go(AppRoutes.home);
     unawaited(ref.read(groupControllerProvider.notifier).leaveGroup(groupId: widget.group.id));
   }
@@ -493,20 +501,21 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView> {
 
       // 내가 폭탄을 받았을 때
       if (!iHadBomb && iHaveBomb) {
-        audioSvc.stopBgm();
-        audioSvc.playTicking();
+        audioSvc.changeBgmVolume(0.2); // BGM 유지, 하지만 작게
+        audioSvc.playTicking(); // 0.7 크기로 Ticking
       } 
       // 내가 폭탄을 넘겼을 때 (안 가짐)
       else if (iHadBomb && !iHaveBomb) {
         audioSvc.stopTicking();
         _currentBgm = (DateTime.now().millisecondsSinceEpoch % 2 == 0) ? 'IngameBGM1.mp3' : 'IngameBGM2.mp3';
-        audioSvc.playBgm(_currentBgm);
+        audioSvc.playBgm(_currentBgm, volume: 0.7);
       }
       // 처음 진입 시 or 초기화 시 (변경 없이 폭탄이 없는 상태)
       else if (oldBomb == null && !iHaveBomb && newBomb.status == BombStatus.active) {
-        audioSvc.playBgm(_currentBgm);
+        audioSvc.playBgm(_currentBgm, volume: 0.7);
       }
       else if (oldBomb == null && iHaveBomb && newBomb.status == BombStatus.active) {
+        audioSvc.playBgm(_currentBgm, volume: 0.2);
         audioSvc.playTicking();
       }
     });
@@ -553,7 +562,11 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(onPressed: () => context.go(AppRoutes.home)),
+        leading: BackButton(onPressed: () {
+          ref.read(audioServiceProvider).playBgm('GameMainThemeSong1.mp3');
+          ref.read(audioServiceProvider).stopTicking();
+          context.go(AppRoutes.home);
+        }),
         title: Text('💣 $groupName'),
         actions: _buildGlobalActions(widget.groupId),
       ),
@@ -634,7 +647,11 @@ class _FinishedTabViewState extends ConsumerState<_FinishedTabView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(onPressed: () => context.go(AppRoutes.home)),
+        leading: BackButton(onPressed: () {
+          ref.read(audioServiceProvider).playBgm('GameMainThemeSong1.mp3');
+          ref.read(audioServiceProvider).stopTicking();
+          context.go(AppRoutes.home);
+        }),
         title: Text('🏆 ${widget.group.name}'),
         actions: _buildGlobalActions(widget.group.id),
       ),

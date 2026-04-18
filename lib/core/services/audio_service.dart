@@ -15,6 +15,8 @@ class AudioService {
   AudioService() {
     _bgmPlayer.setReleaseMode(ReleaseMode.loop);
     _tickingPlayer.setReleaseMode(ReleaseMode.loop);
+    _bgmPlayer.setVolume(0.7);
+    _tickingPlayer.setVolume(0.7);
   }
 
   Future<void> dispose() async {
@@ -26,6 +28,7 @@ class AudioService {
   Future<void> playSfx(String fileName) async {
     try {
       final player = AudioPlayer();
+      await player.setVolume(0.7);
       await player.play(AssetSource('sounds/$fileName'));
       
       // 재생 완료 시 플레이어 자원 해제
@@ -37,12 +40,22 @@ class AudioService {
     }
   }
 
-  /// 반복되는 BGM 재생
-  Future<void> playBgm(String fileName) async {
+  /// 반복되는 BGM 재생 (기본 70%, 텐션 감소시 30%)
+  Future<void> playBgm(String fileName, {double volume = 0.7}) async {
     try {
+      await _bgmPlayer.setVolume(volume);
       await _bgmPlayer.play(AssetSource('sounds/$fileName'));
     } catch (e) {
       debugPrint('playBgm Error: $e');
+    }
+  }
+
+  /// 현재 재생중인 BGM의 볼륨만 조절 (음소거/복구용)
+  Future<void> changeBgmVolume(double volume) async {
+    try {
+      await _bgmPlayer.setVolume(volume);
+    } catch (e) {
+      debugPrint('changeBgmVolume Error: $e');
     }
   }
 
@@ -58,6 +71,7 @@ class AudioService {
   Future<void> playTicking() async {
     try {
       if (_tickingPlayer.state != PlayerState.playing) {
+        await _tickingPlayer.setVolume(0.7);
         await _tickingPlayer.play(AssetSource('sounds/WatchTickingSound1.mp3'));
       }
     } catch (e) {
