@@ -22,10 +22,12 @@ class GroupController extends _$GroupController {
   AsyncValue<void> build() => const AsyncData(null);
 
   /// 새 그룹 생성 — 성공 시 groupId 반환
+  /// 기본 닉네임은 빈 문자열(미설정). 생성 직후 nickname_input_page로
+  /// 이동하여 방장이 직접 닉네임을 지정해야 한다.
   Future<String?> createGroup({
     required String name,
     required int maxMembers,
-    String nickname = '익명',
+    String nickname = '',
   }) async {
     state = const AsyncLoading();
     final uid = ref.read(currentUidProvider);
@@ -95,15 +97,17 @@ class GroupController extends _$GroupController {
         throw Exception('그룹이 가득 찼습니다.');
       }
       await repo.joinGroup(groupId: group.id, uid: uid);
+      // 닉네임을 명시적으로 빈 문자열로 초기화 — 이후 nickname_input_page에서
+      // 사용자가 직접 설정해야 게임 시작이 활성화된다 (닉네임 미설정 감지용)
       await ref.read(userRepositoryProvider).addGroupMembership(
             uid: uid,
             groupId: group.id,
-            nickname: '익명',
+            nickname: '',
           );
       await repo.updateMemberNickname(
             groupId: group.id,
             uid: uid,
-            nickname: '익명',
+            nickname: '',
           );
       groupId = group.id;
     });

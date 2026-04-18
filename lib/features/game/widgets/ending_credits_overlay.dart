@@ -80,14 +80,22 @@ class _EndingCreditsOverlayState extends ConsumerState<EndingCreditsOverlay>
                 child: child,
               );
             },
-            child: SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: _CreditsContent(
-                  key: _contentKey,
-                  group: widget.group,
-                  resultAsync: resultAsync,
+            // Column 전체 높이가 screenHeight를 넘어가 Stack의 기본 제약으로
+            // 오버플로우 줄무늬가 뜨는 문제를 OverflowBox로 해소. 실제 스크롤
+            // 연출은 Transform.translate가 담당하므로 시각적 변화는 없음.
+            child: OverflowBox(
+              minHeight: 0,
+              maxHeight: double.infinity,
+              alignment: Alignment.topCenter,
+              child: SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: _CreditsContent(
+                    key: _contentKey,
+                    group: widget.group,
+                    resultAsync: resultAsync,
+                  ),
                 ),
               ),
             ),
