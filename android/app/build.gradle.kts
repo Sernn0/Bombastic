@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.bombpass.bomb_pass"
+    namespace = "com.bombastic.bombastic"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -30,7 +30,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.bombpass.bomb_pass"
+        applicationId = "com.bombastic.bombastic"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

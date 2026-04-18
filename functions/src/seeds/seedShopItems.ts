@@ -50,7 +50,7 @@ const shopItems: ShopItemSeed[] = [
     type: 'swapOrder',
     usageType: 'always',
     isAvailable: true,
-    probability: 35,
+    probability: 40,
   },
   {
     id: 'shrinkDuration',
@@ -60,7 +60,7 @@ const shopItems: ShopItemSeed[] = [
     type: 'shrinkDuration',
     usageType: 'always',
     isAvailable: true,
-    probability: 30,
+    probability: 25,
   },
   {
     id: 'reverseDirection',
