@@ -2,6 +2,7 @@ import 'package:bomb_pass/core/router/app_router.dart';
 import 'package:bomb_pass/data/firebase/firebase_providers.dart';
 import 'package:bomb_pass/data/repositories/group_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -88,13 +89,18 @@ class _NicknameInputPageState extends ConsumerState<NicknameInputPage> {
                     controller: _controller,
                     decoration: const InputDecoration(
                       labelText: '닉네임',
-                      hintText: '예) 폭탄마스터',
+                      hintText: '예) 폭탄왕',
                       border: OutlineInputBorder(),
                     ),
-                    maxLength: 10,
+                    maxLength: 6,
                     autofocus: true,
                     textInputAction: TextInputAction.done,
                     onSubmitted: (_) => _submit(),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9!@#_\-\.]'),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(

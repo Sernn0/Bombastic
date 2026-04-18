@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -40,10 +41,15 @@ class _GroupCreatePageState extends ConsumerState<GroupCreatePage> {
                 controller: _nameController,
                 decoration: const InputDecoration(
                   labelText: '그룹 이름',
-                  hintText: '예) 우리반 폭탄돌리기',
+                  hintText: '예) 우리반폭탄',
                   border: OutlineInputBorder(),
                 ),
-                maxLength: 20,
+                maxLength: 8,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                    RegExp(r'[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9!@#_\-\.]'),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
 
