@@ -9,8 +9,8 @@ final audioServiceProvider = Provider<AudioService>((ref) {
 });
 
 // Android: 탭 전환/시스템 이벤트에서 오디오 포커스를 빼앗기지 않도록 gain 설정
-const _androidCtx = AudioContext(
-  android: AudioContextAndroid(
+final _androidCtx = AudioContext(
+  android: const AudioContextAndroid(
     contentType: AndroidContentType.music,
     usageType: AndroidUsageType.media,
     audioFocus: AndroidAudioFocus.gain,
