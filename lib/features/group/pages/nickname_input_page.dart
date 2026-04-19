@@ -1,4 +1,5 @@
 import 'package:bomb_pass/core/router/app_router.dart';
+import 'package:bomb_pass/core/services/audio_service.dart';
 import 'package:bomb_pass/data/firebase/firebase_providers.dart';
 import 'package:bomb_pass/data/repositories/group_repository.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _NicknameInputPageState extends ConsumerState<NicknameInputPage> {
   }
 
   Future<void> _submit() async {
+    ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
     final nickname = _controller.text.trim();
     if (nickname.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(

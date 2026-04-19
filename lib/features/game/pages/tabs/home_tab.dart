@@ -1,3 +1,4 @@
+import 'package:bomb_pass/core/services/audio_service.dart';
 import 'package:bomb_pass/data/firebase/firebase_providers.dart';
 import 'package:bomb_pass/data/models/shop_item_model.dart';
 import 'package:bomb_pass/features/game/controllers/game_controller.dart';
@@ -261,9 +262,11 @@ class _GameBodyState extends ConsumerState<_GameBody>
             height: 52,
             child: ElevatedButton(
               onPressed: isMyTurn
-                  ? () => ref
-                      .read(gameControllerProvider.notifier)
-                      .passBomb(groupId: groupId, bombId: widget.bombId)
+                  ? () {
+                      ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
+                      ref.read(gameControllerProvider.notifier)
+                          .passBomb(groupId: groupId, bombId: widget.bombId);
+                    }
                   : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
@@ -381,6 +384,7 @@ class _ItemCard extends ConsumerWidget {
   final bool isUsable;
 
   Future<void> _onItemTap(BuildContext context, WidgetRef ref) async {
+    ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
     // 패시브 아이템은 직접 사용 불가
     if (item.usageType == UsageType.passive) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -408,7 +412,10 @@ class _ItemCard extends ConsumerWidget {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => Navigator.pop(ctx, false),
+                    onPressed: () {
+                      ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
+                      Navigator.pop(ctx, false);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey.shade200,
                       foregroundColor: Colors.black87,
@@ -419,7 +426,10 @@ class _ItemCard extends ConsumerWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => Navigator.pop(ctx, true),
+                    onPressed: () {
+                      ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
+                      Navigator.pop(ctx, true);
+                    },
                     child: const Text('사용'),
                   ),
                 ),

@@ -75,7 +75,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () => context.push(AppRoutes.groupJoin),
+                      onPressed: () {
+                        ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
+                        context.push(AppRoutes.groupJoin);
+                      },
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(0, 52),
                       ),
@@ -86,7 +89,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () => context.push(AppRoutes.groupCreate),
+                      onPressed: () {
+                        ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
+                        context.push(AppRoutes.groupCreate);
+                      },
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(0, 52),
                       ),
@@ -107,14 +113,14 @@ class _HomePageState extends ConsumerState<HomePage> {
 
 // ── 그룹 카드 ────────────────────────────────────────────────
 
-class _GroupCard extends StatelessWidget {
+class _GroupCard extends ConsumerWidget {
   const _GroupCard({required this.group, required this.myUid});
 
   final GroupModel group;
   final String myUid;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final myNickname = group.memberNicknames[myUid] ?? '나';
     final isFull = group.memberUids.length >= group.maxMembers;
 
@@ -141,9 +147,10 @@ class _GroupCard extends StatelessWidget {
           ],
         ),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () => context.push(
-          '${AppRoutes.game}/${group.id}',
-        ),
+        onTap: () {
+          ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
+          context.push('${AppRoutes.game}/${group.id}');
+        },
       ),
     );
   }

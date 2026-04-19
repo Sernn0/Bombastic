@@ -1,4 +1,5 @@
 import 'package:bomb_pass/core/constants/app_constants.dart';
+import 'package:bomb_pass/core/services/audio_service.dart';
 import 'package:bomb_pass/data/firebase/firebase_providers.dart';
 import 'package:bomb_pass/data/models/shop_item_model.dart';
 import 'package:bomb_pass/features/shop/controllers/shop_controller.dart';
@@ -185,6 +186,7 @@ class _RandomBoxCard extends ConsumerWidget {
   }
 
   Future<void> _onPurchase(BuildContext context, WidgetRef ref) async {
+    ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
     final obtained = await ref
         .read(shopControllerProvider.notifier)
         .purchaseRandomBox(groupId: groupId);
@@ -200,11 +202,11 @@ class _RandomBoxCard extends ConsumerWidget {
     }
 
     if (obtained != null) {
-      _showObtainedDialog(context, obtained);
+      _showObtainedDialog(context, ref, obtained);
     }
   }
 
-  void _showObtainedDialog(BuildContext context, ShopItemModel item) {
+  void _showObtainedDialog(BuildContext context, WidgetRef ref, ShopItemModel item) {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -237,7 +239,10 @@ class _RandomBoxCard extends ConsumerWidget {
         ),
         actions: [
           ElevatedButton(
-            onPressed: () => Navigator.pop(ctx),
+            onPressed: () {
+              ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
+              Navigator.pop(ctx);
+            },
             child: const Text('확인'),
           ),
         ],
@@ -359,13 +364,13 @@ class _InventoryChip extends StatelessWidget {
   }
 }
 
-class _InventoryCard extends StatelessWidget {
+class _InventoryCard extends ConsumerWidget {
   const _InventoryCard({required this.item, required this.count});
 
   final ShopItemModel item;
   final int count;
 
-  void _showDescription(BuildContext context) {
+  void _showDescription(BuildContext context, WidgetRef ref) {
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -383,7 +388,10 @@ class _InventoryCard extends StatelessWidget {
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => Navigator.pop(ctx),
+                onPressed: () {
+                  ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
+                  Navigator.pop(ctx);
+                },
                 child: const Text('확인'),
               ),
             ),
@@ -394,13 +402,16 @@ class _InventoryCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final borderColor = Colors.grey.shade300;
     final backgroundColor =
         Theme.of(context).colorScheme.surfaceContainerHighest;
 
     return GestureDetector(
-      onTap: () => _showDescription(context),
+      onTap: () {
+        ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
+        _showDescription(context, ref);
+      },
       child: Container(
         decoration: BoxDecoration(
           color: backgroundColor,
