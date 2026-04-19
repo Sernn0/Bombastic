@@ -25,33 +25,79 @@ import 'package:go_router/go_router.dart';
 import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
 
 
-class GamePage extends ConsumerWidget {
+class GamePage extends ConsumerStatefulWidget {
   const GamePage({required this.groupId, super.key});
 
   final String groupId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GamePage> createState() => _GamePageState();
+}
+
+class _GamePageState extends ConsumerState<GamePage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _explosionController;
+  bool _explosionTriggered = false;
+  bool _readyForFinished = false;
+  GroupModel? _finishedGroup;
+
+  @override
+  void initState() {
+    super.initState();
+    _explosionController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2200),
+    )..addStatusListener((status) {
+        if (status == AnimationStatus.completed && mounted) {
+          setState(() => _readyForFinished = true);
+        }
+      });
+  }
+
+  @override
+  void dispose() {
+    _explosionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final uid = ref.watch(currentUidProvider);
 
-    // 스트림 상태 변화에 따른 사이드 이펙트(화면 강제 전환)
-    ref.listen<AsyncValue<GroupModel?>>(watchGroupProvider(groupId), (prev, next) {
+    // 강퇴/삭제 감지
+    ref.listen<AsyncValue<GroupModel?>>(watchGroupProvider(widget.groupId), (prev, next) {
       if (next.isLoading) return;
-      
       final group = next.asData?.value;
       final hasPermissionError = next.hasError;
       final isNoLongerMember = group != null && uid != null && !group.memberUids.contains(uid);
       final isDeleted = !next.isLoading && group == null;
 
       if (hasPermissionError || isDeleted || isNoLongerMember) {
-        // 이미 홈에 있거나 이동 중이면 중복 실행 방지
         if (context.mounted && GoRouterState.of(context).uri.toString() != AppRoutes.home) {
           context.go(AppRoutes.home);
         }
       }
+      // finished group 캐싱 (멤버 탈퇴 전 데이터 보존)
+      if (group?.status == GroupStatus.finished) {
+        _finishedGroup ??= group;
+      }
     });
 
-    final groupAsync = ref.watch(watchGroupProvider(groupId));
+    // 폭발 감지: activeBomb 가 bomb → null 로 변하면 폭발
+    ref.listen(activeBombProvider(widget.groupId), (prev, next) {
+      final oldBomb = prev?.asData?.value;
+      final newBomb = next.asData?.value;
+      if (oldBomb != null && newBomb == null && !_explosionTriggered) {
+        final audioSvc = ref.read(audioServiceProvider);
+        audioSvc.playSfx('ExplosionSound1.mp3');
+        audioSvc.stopTicking();
+        audioSvc.stopBgm();
+        setState(() => _explosionTriggered = true);
+        _explosionController.forward();
+      }
+    });
+
+    final groupAsync = ref.watch(watchGroupProvider(widget.groupId));
 
     return groupAsync.when(
       loading: () => const Scaffold(
@@ -87,9 +133,24 @@ class GamePage extends ConsumerWidget {
           );
         }
 
+        // 폭발 애니메이션 재생 중: playing 화면 유지 + 오버레이
+        if (_explosionTriggered && !_readyForFinished) {
+          return Stack(
+            children: [
+              _PlayingTabView(groupId: widget.groupId),
+              _ExplosionOverlay(controller: _explosionController),
+            ],
+          );
+        }
+
+        // 애니메이션 종료 후: finished 화면으로 전환
+        if (_readyForFinished) {
+          return _FinishedView(group: _finishedGroup ?? group);
+        }
+
         return switch (group.status) {
           GroupStatus.waiting => _WaitingView(group: group),
-          GroupStatus.playing => _PlayingTabView(groupId: groupId),
+          GroupStatus.playing => _PlayingTabView(groupId: widget.groupId),
           GroupStatus.finished => _FinishedView(group: group),
         };
       },
@@ -555,8 +616,7 @@ class _PlayingTabView extends ConsumerStatefulWidget {
   ConsumerState<_PlayingTabView> createState() => _PlayingTabViewState();
 }
 
-class _PlayingTabViewState extends ConsumerState<_PlayingTabView>
-    with SingleTickerProviderStateMixin {
+class _PlayingTabViewState extends ConsumerState<_PlayingTabView> {
   int _tabIndex = 2; // 홈 탭 기본
 
   static const _tabs = [
@@ -570,49 +630,14 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView>
   Map<String, dynamic>? _lastShownUsage;
   String _currentBgm = 'IngameBGM1.mp3';
 
-  late final AnimationController _explosionController;
-  bool _explosionTriggered = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _explosionController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2200),
-    );
-  }
-
-  @override
-  void dispose() {
-    _explosionController.dispose();
-    super.dispose();
-  }
-
-  void _triggerExplosion() {
-    if (_explosionTriggered) return;
-    setState(() => _explosionTriggered = true);
-    _explosionController.forward();
-  }
-
   @override
   Widget build(BuildContext context) {
     final uid = ref.watch(currentUidProvider);
 
-    // 폭탄 상태 리스너 (BGM 1/2 vs Ticking, Explosion)
+    // 폭탄 상태 리스너 (BGM 변경)
     ref.listen(activeBombProvider(widget.groupId), (prev, next) {
       final oldBomb = prev?.asData?.value;
       final newBomb = next.asData?.value;
-
-      final audioSvc = ref.read(audioServiceProvider);
-
-      // 폭발 감지: 활성 폭탄이 사라짐 = 폭발
-      if (oldBomb != null && newBomb == null) {
-        audioSvc.playSfx('ExplosionSound1.mp3');
-        audioSvc.stopTicking();
-        audioSvc.stopBgm();
-        _triggerExplosion();
-        return;
-      }
 
       if (newBomb == null) return;
 
@@ -732,14 +757,7 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView>
       ),
     );
 
-    if (!_explosionTriggered) return scaffold;
-
-    return Stack(
-      children: [
-        scaffold,
-        _ExplosionOverlay(controller: _explosionController),
-      ],
-    );
+    return scaffold;
   }
 }
 
