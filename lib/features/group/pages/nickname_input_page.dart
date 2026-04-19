@@ -1,4 +1,5 @@
 import 'package:bomb_pass/core/router/app_router.dart';
+import 'package:bomb_pass/widgets/top_toast.dart';
 import 'package:bomb_pass/core/services/audio_service.dart';
 import 'package:bomb_pass/data/firebase/firebase_providers.dart';
 import 'package:bomb_pass/data/repositories/group_repository.dart';
@@ -30,9 +31,7 @@ class _NicknameInputPageState extends ConsumerState<NicknameInputPage> {
     ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
     final nickname = _controller.text.trim();
     if (nickname.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('닉네임을 입력해주세요.')),
-      );
+      showTopToast(context, '닉네임을 입력해주세요.');
       return;
     }
 
@@ -54,9 +53,7 @@ class _NicknameInputPageState extends ConsumerState<NicknameInputPage> {
     } catch (e) {
       if (mounted) {
         setState(() => _isLoading = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('오류: $e')),
-        );
+        showTopToast(context, '오류: $e');
       }
     }
   }

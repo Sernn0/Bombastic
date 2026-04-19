@@ -6,6 +6,7 @@ import 'package:bomb_pass/features/game/controllers/timer_controller.dart';
 import 'package:bomb_pass/features/group/controllers/group_controller.dart';
 import 'package:bomb_pass/features/shop/controllers/shop_controller.dart';
 import 'package:bomb_pass/widgets/item_icon.dart';
+import 'package:bomb_pass/widgets/top_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -387,9 +388,7 @@ class _ItemCard extends ConsumerWidget {
     ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
     // 패시브 아이템은 직접 사용 불가
     if (item.usageType == UsageType.passive) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('자동 발동 아이템입니다.')),
-      );
+      showTopToast(context, '자동 발동 아이템입니다.');
       return;
     }
 
@@ -445,14 +444,9 @@ class _ItemCard extends ConsumerWidget {
         .useItem(groupId: groupId, itemId: item.id);
     if (!context.mounted) return;
     final state = ref.read(gameControllerProvider);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          state.hasError
-              ? '사용 실패: ${state.error}'
-              : '${item.name} 사용 완료!',
-        ),
-      ),
+    showTopToast(
+      context,
+      state.hasError ? '사용 실패: ${state.error}' : '${item.name} 사용 완료!',
     );
   }
 

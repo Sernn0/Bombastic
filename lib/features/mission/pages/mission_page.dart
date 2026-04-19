@@ -2,6 +2,7 @@ import 'package:bomb_pass/core/constants/app_constants.dart';
 import 'package:bomb_pass/data/firebase/firebase_providers.dart';
 import 'package:bomb_pass/features/mission/controllers/mission_controller.dart';
 import 'package:bomb_pass/widgets/currency_icon.dart';
+import 'package:bomb_pass/widgets/top_toast.dart';
 import 'package:bomb_pass/core/services/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -89,9 +90,7 @@ class _MissionBodyState extends ConsumerState<MissionBody> {
                             setState(() => _justCheckedIn = true);
                             message = '오늘은 이미 출석했습니다.';
                           }
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(message)),
-                          );
+                          showTopToast(context, message);
                         },
                   icon: checkInState.isLoading
                       ? const SizedBox(

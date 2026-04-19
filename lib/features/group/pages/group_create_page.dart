@@ -1,3 +1,4 @@
+import 'package:bomb_pass/widgets/top_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -99,9 +100,7 @@ class _GroupCreatePageState extends ConsumerState<GroupCreatePage> {
                         ref.read(audioServiceProvider).playSfx('ButtonClickSound1.mp3');
                         final name = _nameController.text.trim();
                         if (name.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('그룹 이름을 입력해주세요.')),
-                          );
+                          showTopToast(context, '그룹 이름을 입력해주세요.');
                           return;
                         }
                         final groupId = await ref
@@ -113,9 +112,7 @@ class _GroupCreatePageState extends ConsumerState<GroupCreatePage> {
                         } else {
                           final err = ref.read(groupControllerProvider).error;
                           if (err != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('$err')),
-                            );
+                            showTopToast(context, '$err');
                           }
                         }
                       },

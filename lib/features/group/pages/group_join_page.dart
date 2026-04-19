@@ -1,4 +1,5 @@
 import 'package:bomb_pass/features/group/controllers/group_controller.dart';
+import 'package:bomb_pass/widgets/top_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -85,9 +86,7 @@ class _GroupJoinPageState extends ConsumerState<GroupJoinPage> {
                         } else {
                           final err = ref.read(groupControllerProvider).error;
                           if (err != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('$err')),
-                            );
+                            showTopToast(context, '$err');
                           }
                         }
                       },

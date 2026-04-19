@@ -4,6 +4,7 @@ import 'package:bomb_pass/data/firebase/firebase_providers.dart';
 import 'package:bomb_pass/data/models/shop_item_model.dart';
 import 'package:bomb_pass/features/shop/controllers/shop_controller.dart';
 import 'package:bomb_pass/widgets/currency_icon.dart';
+import 'package:bomb_pass/widgets/top_toast.dart';
 import 'package:bomb_pass/widgets/item_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -195,9 +196,7 @@ class _RandomBoxCard extends ConsumerWidget {
 
     final error = ref.read(shopControllerProvider).error;
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('구매 실패: $error')),
-      );
+      showTopToast(context, '구매 실패: $error');
       return;
     }
 
