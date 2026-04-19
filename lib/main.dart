@@ -52,13 +52,14 @@ class BombasticApp extends ConsumerStatefulWidget {
   ConsumerState<BombasticApp> createState() => _BombasticAppState();
 }
 
-class _BombasticAppState extends ConsumerState<BombasticApp> {
+class _BombasticAppState extends ConsumerState<BombasticApp> with WidgetsBindingObserver {
   late final AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSub;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _appLinks = AppLinks();
     _initDeepLinks();
   }
@@ -95,8 +96,21 @@ class _BombasticAppState extends ConsumerState<BombasticApp> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _linkSub?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused || 
+        state == AppLifecycleState.hidden || 
+        state == AppLifecycleState.detached) {
+      ref.read(audioServiceProvider).pauseAll();
+    } else if (state == AppLifecycleState.resumed) {
+      ref.read(audioServiceProvider).resumeAll();
+    }
   }
 
   @override

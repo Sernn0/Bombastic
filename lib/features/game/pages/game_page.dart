@@ -137,7 +137,7 @@ class _WaitingViewState extends ConsumerState<_WaitingView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(audioServiceProvider).playSfx('EnteringSound1.mp3');
-      ref.read(audioServiceProvider).stopBgm(); // 대기실 진입 시 메인 테마 중지
+      ref.read(audioServiceProvider).playBgm('IngameBGM1.mp3', volume: 0.2); // 대기실 진입 시 IngameBGM 재생
     });
   }
 
@@ -175,8 +175,16 @@ class _WaitingViewState extends ConsumerState<_WaitingView> {
           ),
         ),
       ),
-      body: FloatingBombBackground(
-        child: SafeArea(
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
+          ref.read(audioServiceProvider).playBgm('GameMainThemeSong1.mp3');
+          ref.read(audioServiceProvider).stopTicking();
+          context.go(AppRoutes.home);
+        },
+        child: FloatingBombBackground(
+          child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -352,11 +360,6 @@ class _WaitingViewState extends ConsumerState<_WaitingView> {
                                 await ref
                                     .read(gameControllerProvider.notifier)
                                     .startGame(groupId: group.id);
-                                if (context.mounted) {
-                                  ref
-                                      .read(audioServiceProvider)
-                                      .playSfx('GameStartSound1.mp3');
-                                }
                               } catch (e) {
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -389,6 +392,7 @@ class _WaitingViewState extends ConsumerState<_WaitingView> {
             ),
           ),
         ),
+      ),
       ),
     );
   }
@@ -548,21 +552,21 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView> {
 
       // 내가 폭탄을 받았을 때
       if (!iHadBomb && iHaveBomb) {
-        audioSvc.changeBgmVolume(0.2); // BGM 유지, 하지만 작게
+        audioSvc.changeBgmVolume(0.1); // BGM 볼륨 10%
         audioSvc.playTicking(); // 0.7 크기로 Ticking
       } 
       // 내가 폭탄을 넘겼을 때 (안 가짐)
       else if (iHadBomb && !iHaveBomb) {
         audioSvc.stopTicking();
         _currentBgm = (DateTime.now().millisecondsSinceEpoch % 2 == 0) ? 'IngameBGM1.mp3' : 'IngameBGM2.mp3';
-        audioSvc.playBgm(_currentBgm, volume: 0.7);
+        audioSvc.playBgm(_currentBgm, volume: 0.2);
       }
       // 처음 진입 시 or 초기화 시 (변경 없이 폭탄이 없는 상태)
       else if (oldBomb == null && !iHaveBomb && newBomb.status == BombStatus.active) {
-        audioSvc.playBgm(_currentBgm, volume: 0.7);
+        audioSvc.playBgm(_currentBgm, volume: 0.2);
       }
       else if (oldBomb == null && iHaveBomb && newBomb.status == BombStatus.active) {
-        audioSvc.playBgm(_currentBgm, volume: 0.2);
+        audioSvc.playBgm(_currentBgm, volume: 0.1);
         audioSvc.playTicking();
       }
     });
@@ -628,7 +632,15 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView> {
           ),
         ),
       ),
-      body: FloatingBombBackground(
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
+          ref.read(audioServiceProvider).playBgm('GameMainThemeSong1.mp3');
+          ref.read(audioServiceProvider).stopTicking();
+          context.go(AppRoutes.home);
+        },
+        child: FloatingBombBackground(
         child: switch (_tabIndex) {
           0 => ShopBody(groupId: widget.groupId),
           1 => MissionBody(groupId: widget.groupId),
@@ -637,6 +649,7 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView> {
           4 => SettingsTab(groupId: widget.groupId),
           _ => HomeTab(groupId: widget.groupId),
         },
+      ),
       ),
       bottomNavigationBar: NavigationBar(
         height: 60,
@@ -725,13 +738,22 @@ class _FinishedTabViewState extends ConsumerState<_FinishedTabView> {
           ),
         ),
       ),
-      body: FloatingBombBackground(
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
+          ref.read(audioServiceProvider).playBgm('GameMainThemeSong1.mp3');
+          ref.read(audioServiceProvider).stopTicking();
+          context.go(AppRoutes.home);
+        },
+        child: FloatingBombBackground(
         child: switch (_tabIndex) {
           0 => _FinishedHomeTab(group: widget.group),
           1 => LogTab(groupId: widget.group.id),
           2 => SettingsTab(groupId: widget.group.id),
           _ => _FinishedHomeTab(group: widget.group),
         },
+      ),
       ),
       bottomNavigationBar: NavigationBar(
         height: 60,

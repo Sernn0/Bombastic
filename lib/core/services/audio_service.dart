@@ -15,7 +15,7 @@ class AudioService {
   AudioService() {
     _bgmPlayer.setReleaseMode(ReleaseMode.loop);
     _tickingPlayer.setReleaseMode(ReleaseMode.loop);
-    _bgmPlayer.setVolume(0.7);
+    _bgmPlayer.setVolume(0.2);
     _tickingPlayer.setVolume(0.7);
   }
 
@@ -40,8 +40,8 @@ class AudioService {
     }
   }
 
-  /// 반복되는 BGM 재생 (기본 70%, 텐션 감소시 30%)
-  Future<void> playBgm(String fileName, {double volume = 0.7}) async {
+  /// 반복되는 BGM 재생 (기본 20%)
+  Future<void> playBgm(String fileName, {double volume = 0.2}) async {
     try {
       await _bgmPlayer.setVolume(volume);
       await _bgmPlayer.play(AssetSource('sounds/$fileName'));
@@ -64,6 +64,26 @@ class AudioService {
       await _bgmPlayer.stop();
     } catch (e) {
       debugPrint('stopBgm Error: $e');
+    }
+  }
+
+  /// 모든 오디오 일시정지 (앱 백그라운드용)
+  Future<void> pauseAll() async {
+    try {
+      await _bgmPlayer.pause();
+      await _tickingPlayer.pause();
+    } catch (e) {
+      debugPrint('pauseAll Error: $e');
+    }
+  }
+
+  /// 모든 오디오 재개 (앱 포그라운드용)
+  Future<void> resumeAll() async {
+    try {
+      await _bgmPlayer.resume();
+      await _tickingPlayer.resume();
+    } catch (e) {
+      debugPrint('resumeAll Error: $e');
     }
   }
 
