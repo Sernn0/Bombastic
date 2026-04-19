@@ -44,6 +44,7 @@ class _GamePageState extends ConsumerState<GamePage>
   bool _explosionShownChecked = false;
   bool _explosionAlreadyShown = false;
   GroupModel? _finishedGroup;
+  BombModel? _prevBomb;
 
   @override
   void initState() {
@@ -108,23 +109,27 @@ class _GamePageState extends ConsumerState<GamePage>
       }
     });
 
-    // 폭발 감지: activeBomb 가 bomb → null 로 변하면 폭발
-    ref.listen(activeBombProvider(widget.groupId), (prev, next) {
-      final oldBomb = prev?.asData?.value;
-      final newBomb = next.asData?.value;
-      if (oldBomb != null && newBomb == null && !_explosionTriggered) {
-        final audioSvc = ref.read(audioServiceProvider);
-        audioSvc.playSfx('ExplosionSound1.mp3');
-        audioSvc.stopTicking();
-        audioSvc.stopBgm();
+    // 폭발 감지: ref.watch로 동기 처리 → 같은 프레임에 검정화면 전환 (한 프레임 지연 없음)
+    final bombAsync = ref.watch(activeBombProvider(widget.groupId));
+    if (!_explosionTriggered) {
+      final currentBomb = bombAsync.asData?.value;
+      if (_prevBomb != null && currentBomb == null && !bombAsync.isLoading) {
+        _explosionTriggered = true;
         _explosionShownChecked = true;
-        SharedPreferences.getInstance().then((prefs) {
-          prefs.setBool('explosion_shown_${widget.groupId}', true);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          ref.read(audioServiceProvider)
+            ..playSfx('ExplosionSound1.mp3')
+            ..stopTicking()
+            ..stopBgm();
+          SharedPreferences.getInstance().then((prefs) {
+            prefs.setBool('explosion_shown_${widget.groupId}', true);
+          });
+          _explosionController.forward();
         });
-        setState(() => _explosionTriggered = true);
-        _explosionController.forward();
       }
-    });
+      if (currentBomb != null) _prevBomb = currentBomb;
+    }
 
     final groupAsync = ref.watch(watchGroupProvider(widget.groupId));
 
