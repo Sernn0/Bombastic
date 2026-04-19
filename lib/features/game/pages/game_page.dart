@@ -633,6 +633,7 @@ class _PlayingTabViewState extends ConsumerState<_PlayingTabView> {
   @override
   Widget build(BuildContext context) {
     final uid = ref.watch(currentUidProvider);
+    final audioSvc = ref.read(audioServiceProvider);
 
     // 폭탄 상태 리스너 (BGM 변경)
     ref.listen(activeBombProvider(widget.groupId), (prev, next) {
