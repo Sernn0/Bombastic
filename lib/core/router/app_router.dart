@@ -8,10 +8,12 @@ import '../../features/game/pages/game_page.dart';
 import '../../features/group/pages/group_join_page.dart';
 import '../../features/group/pages/group_create_page.dart';
 import '../../features/group/pages/nickname_input_page.dart';
+import '../../features/splash/splash_page.dart';
 part 'app_router.g.dart';
 
 abstract final class AppRoutes {
-  static const authGate = '/';
+  static const splash = '/';
+  static const authGate = '/auth';
   static const home = '/home';
   static const groupJoin = '/group/join';
   static const groupCreate = '/group/create';
@@ -22,9 +24,13 @@ abstract final class AppRoutes {
 @riverpod
 GoRouter appRouter(Ref ref) {
   return GoRouter(
-    initialLocation: AppRoutes.authGate,
+    initialLocation: AppRoutes.splash,
     debugLogDiagnostics: true,
     routes: [
+      GoRoute(
+        path: AppRoutes.splash,
+        builder: (context, state) => const SplashPage(),
+      ),
       GoRoute(
         path: AppRoutes.authGate,
         builder: (context, state) => const AuthGate(),
